@@ -1,6 +1,8 @@
 body {
     text-align: center;
     font-family: 'Open Sans', sans-serif;
+		margin: 0;
+		padding: 0;
 }
 
 .left {
@@ -142,6 +144,10 @@ ng-map {
     margin: 10px auto;
 }
 
+form.addlog{
+	text-align: left;
+}
+
 .addlog input, .addlog select {
     font-size: 14px;
     margin: 5px 5px;
@@ -153,6 +159,10 @@ ng-map {
 
 #transmitter input {
     width: 15em;
+}
+
+.chart{
+	padding: 10px;
 }
 
 .chart>div {

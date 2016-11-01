@@ -1,4 +1,4 @@
-var app = angular.module('dxLog', ['ngResource', 'angucomplete-alt', 'ui.router', 'satellizer', 'ngFileUpload']);
+var app = angular.module('dxLog', ['ngResource', 'angucomplete-alt', 'ui.router', 'satellizer', 'ngFileUpload', 'ngMap', 'ngDialog']);
 
 app.config(function($stateProvider, $urlRouterProvider, $locationProvider, $authProvider) {
         $stateProvider

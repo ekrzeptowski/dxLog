@@ -1,5 +1,5 @@
 angular.module('dxLog')
-  .controller('HeaderCtrl', function($scope, $location, $window, $auth) {
+  .controller('HeaderCtrl', function($scope, $location, $window, $auth, ngDialog) {
     $scope.isActive = function (viewLocation) {
       return viewLocation === $location.path();
     };
@@ -8,6 +8,9 @@ angular.module('dxLog')
       return $auth.isAuthenticated();
     };
 
+		$scope.addLog = function() {
+			ngDialog.open({ template: 'partials/addlog.html', controller: 'NewLogForm', closeByNavigation: true, className: 'ngdialog-theme-plain' });
+		}
 
     $scope.logout = function() {
       $auth.logout();
