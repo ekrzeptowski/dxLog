@@ -1,0 +1,44 @@
+<div ng-if="messages.error" role="alert" class="message text-danger">
+    <div>{{messages.error}}</div>
+    <a ng-click="clearForm()" href="/">Return</a>
+</div>
+<div ng-if="messages.success" role="alert" class="message text-success">
+    <div>{{messages.success}}</div>
+    <a ng-click="clearForm()" href="/">Return</a>
+</div>
+
+<form class="addlog" ng-submit="sendForm()" name="logData">
+    <input type="number" placeholder="Frequency" style="width: 6em;" step="0.01" ng-model="formData.freq" required>
+    <select value="h" ng-model="formData.pol">
+      <option>h</option>
+      <option>v</option>
+    </select>
+    <div angucomplete-alt id="station" placeholder="Station" maxlength="50" pause="100" override-suggestions="true" selected-object="selectedStation" local-data="stations" search-fields="name" title-field="name" minlength="1" input-class="form-control form-control-small" match-class="highlight"></div>
+    <div angucomplete-alt id="transmitter" placeholder="Transmitter" maxlength="80" pause="100" override-suggestions="true" selected-object="selectedTransmitter" local-data="sites" search-fields="site" title-field="site" minlength="1" input-class="form-control form-control-small" match-class="highlight"></div>
+    <input type="text" placeholder="ITU" style="width: 3em;" pattern="[A-Z]{3}" title="Three letter country code" ng-model="formData.location.itu">
+    <input type="text" placeholder="Country" ng-model="formData.location.country">
+    <input type="number" placeholder="Lat" step="0.00000001" ng-model="formData.location.lat">
+    <input type="number" placeholder="Long" step="0.00000001" ng-model="formData.location.long">
+    <input type="text" placeholder="PS" style="width:6em;" ng-model="formData.ps" maxlength="8">
+    <input type="text" placeholder="PI" style="width:3em;" ng-model="formData.pi" maxlength="4">
+    <input type="number" placeholder="Pmax" style="width:4em;" step="0.01" ng-model="formData.pmax">
+    <input type="number" placeholder="QRB" style="width:4em;" ng-model="formData.location.qrb">
+    <input type="date" ng-model="formData.firstLog">
+    <select ng-model="formData.mode">
+      <option>ducting</option>
+      <option>scatter</option>
+      <option>scttr/duct</option>
+      <option>regular</option>
+      <option>semi-loc</option>
+      <option>local</option>
+    </select>
+		<input type="text" placeholder="Notes" ng-model="formData.comment">
+		<input type="file" ngf-select ng-model="file" name="file" accept="audio/*">
+		<div ng-click="log()">
+			LOG
+		</div>
+		<audio controls ngf-src="file"></audio>
+    <input type="submit">
+</form>
+
+<p><a href="/">return</a></p>

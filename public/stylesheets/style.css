@@ -1,0 +1,198 @@
+body {
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.left {
+    text-align: left;
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+a {
+    text-decoration: none;
+    color: #2f2cfc;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+header a:hover {
+    text-decoration: none;
+    border-bottom: dashed black 1px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    display: inline-block;
+    margin: 0 20px;
+}
+
+h1 a {
+    color: black;
+}
+
+h2 {
+    font-size: larger;
+    color: #3b3b3b;
+}
+
+.up:after {
+    content: "▲";
+    font-size: 12px;
+}
+
+.down:after {
+    content: "▼";
+    font-size: 12px;
+}
+
+tbody a {
+    color: inherit;
+}
+
+tbody a:hover {
+    text-decoration: underline overline;
+}
+
+.router {
+    position: relative;
+		margin-bottom: 75px;
+}
+
+.itus span {
+    margin: 8px 10px;
+}
+
+.message {
+    position: absolute;
+    background: white;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-wrap: wrap;
+    z-index: 2;
+}
+
+.message>div {
+    width: 100%;
+}
+
+.table {
+    border-spacing: 1px;
+    margin: auto;
+}
+
+.table>thead {
+    background: #2D74B5;
+    color: #fff;
+}
+
+.table>thead td {
+    cursor: pointer;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.even {
+    background: #4895DC;
+}
+
+.odd {
+    background: #4DA3F2;
+}
+
+.table>tbody>tr:hover {
+    background: #FFFF21;
+}
+
+.table>tbody td {
+    font-size: 14px;
+}
+
+.table>tbody td img {
+    vertical-align: middle;
+    margin: 0 2px;
+}
+
+.rds{
+	font-family: monospace;
+	font-weight: bold;
+}
+
+ng-map {
+		max-width: 960px;
+		display: inline-block;
+    height: 480px;
+    margin: 10px auto;
+}
+
+.addlog input, .addlog select {
+    font-size: 14px;
+    margin: 5px 5px;
+}
+
+#station, #transmitter {
+    display: inline-block;
+}
+
+#transmitter input {
+    width: 15em;
+}
+
+.chart>div {
+    text-align: right;
+    background: #F0EDBB;
+    margin-bottom: 1px;
+    font-size: 12px;
+    padding-right: 5px;
+}
+
+.angucomplete-holder {
+    position: relative;
+}
+
+.angucomplete-dropdown {
+    position: absolute;
+    background: white;
+    width: 100%;
+    border: solid 1px black;
+    border-top: none;
+    z-index: 2;
+}
+
+.angucomplete-row {
+    border-bottom: 1px solid black;
+}
+
+.angucomplete-row :hover {
+    background: #1c66c8;
+}
+
+.player {
+    position: fixed;
+    bottom: 0;
+    background: #F0EDBB;
+    left: 0;
+    right: 0;
+    width: 400px;
+    margin: auto;
+    -webkit-box-shadow: 0px -1px 20px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px -1px 20px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px -1px 20px 0px rgba(0, 0, 0, 0.75);
+}

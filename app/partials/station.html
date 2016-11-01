@@ -1,0 +1,41 @@
+<h2>{{title}}</h2>
+<ng-map zoom="5" zoom-to-include-markers="auto" disable-default-u-i="true" disable-double-click-zoom="true" draggable="false" zoom-control="false" map-type-id="TERRAIN" default-style="false" scrollwheel="false" center="{{rx}}">
+    <marker ng-repeat="item in stations" position="{{item.location.lat}}, {{item.location.long}}" title="{{item.location.site}}" icon="{url:'tx.png', anchor: [16,28]}" on-click="mapClick({{item.location}})"></marker>
+    <shape ng-repeat="item in stations" name="polyline" path="[{{rx}}, {{[item.location.lat, item.location.long]}}]" geodesic="true" stroke-color="#FF0000" stroke-opacity="0.33" stroke-weight="3"></shape>
+		<marker position="{{rx}}" title="RX" icon="{url:'rx.png', anchor: [16,28]}"></marker>
+</ng-map>
+<table class="table">
+    <thead>
+        <tr>
+            <td ng-class="{up: col == 'freq', down: col == 'freq' && reverse}" ng-click="order('freq')">Freq</td>
+            <td ng-class="{up: col == 'station', down: col == 'station' && reverse}" ng-click="order('station')">Station</td>
+            <td ng-class="{up: col[0] == 'location.itu', down: col[0] == 'location.itu' && reverse}" ng-click="order(['location.itu', 'location.site'])">ITU / Location</td>
+            <td ng-class="{up: col == 'ps', down: col == 'ps' && reverse}" ng-click="order('ps')">PS</td>
+            <td ng-class="{up: col == 'pi', down: col == 'pi' && reverse}" ng-click="order('pi')">PI</td>
+            <td ng-class="{up: col == 'pmax', down: col == 'pmax' && reverse}" ng-click="order('pmax')">Pmax</td>
+            <td ng-class="{up: col == 'location.qrb', down: col == 'location.qrb' && reverse}" ng-click="order('location.qrb')">QRB</td>
+            <td ng-class="{up: col == 'firstLog', down: col == 'firstLog' && reverse}" ng-click="order('firstLog')">1st Log</td>
+            <td ng-class="{up: col == 'mode', down: col == 'mode' && reverse}" ng-click="order('mode')">Mode</td>
+						<td></td>
+        </tr>
+    </thead>
+		<tr ng-repeat="item in stations | orderBy:col:reverse" ng-class="color(col, freqs, item.freq) ? 'even' : 'odd'">
+        <td>{{item.freq | number : 1}}{{item.pol}}</td>
+        <td class="left">{{item.station}}</td>
+        <td class="left"><span ng-class="{'bold': (item.location.itu != 'POL')}">{{item.location.itu}}</span> <a ng-href="transmitter/{{item.location._id}}">{{item.location.site}}</a></td>
+				<td class="rds">{{item.ps}}</td>
+        <td class="rds">{{item.pi}}</td>
+        <td class="right">{{item.pmax | number : 2}}</td>
+        <td class="right" ng-class="{'bold': item.location.qrb > 600}">{{item.location.qrb}}</td>
+        <td>{{item.firstLog | date:'yyyy-MM-dd'}}</td>
+        <td>{{item.mode}}</td>
+				<td><img ng-if="item.comment" src="info.png" title="{{item.comment}}"><a href="#" ng-if="item.audio" ng-click="playAudio(item.audio)"><img src="audio.png"></a></td>
+    </tr>
+</table>
+
+<p><a href="/">return</a></p>
+
+<div class="player" ng-show="audio">
+	<div>{{audio}}</div>
+	<audio ng-src="{{audioUrl}}" controls autoplay></audio>
+</div>
