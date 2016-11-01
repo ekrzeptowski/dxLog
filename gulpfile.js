@@ -8,6 +8,9 @@ var buffer = require('vinyl-buffer');
 var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var plumber = require('gulp-plumber');
+var autoprefixer = require('gulp-autoprefixer');
+var cleanCSS = require('gulp-clean-css');
+var sourcemaps = require('gulp-sourcemaps');
 
 
 gulp.task('angular', function() {
@@ -35,10 +38,21 @@ gulp.task('vendor', function() {
     .pipe(gulp.dest('public/js'));
 });
 
+gulp.task('css', function(){
+    gulp.src('app/css/**/*.css')
+				.pipe(sourcemaps.init())
+        .pipe(cleanCSS())
+        .pipe(concat('style.min.css'))
+        .pipe(autoprefixer('last 3 version', 'safari 5', 'ie 8', 'ie 9'))
+				.pipe(sourcemaps.write('maps'))
+        .pipe(gulp.dest('public/stylesheets'))
+});
+
 gulp.task('watch', function() {
   gulp.watch('app/partials/**/*.html', ['templates']);
   gulp.watch('app/**/*.js', ['angular']);
+	gulp.watch('app/**/*.css', ['css']);
 });
 
-gulp.task('build', ['angular', 'vendor', 'templates']);
+gulp.task('build', ['angular', 'vendor', 'templates', 'css']);
 gulp.task('default', ['build', 'watch']);
