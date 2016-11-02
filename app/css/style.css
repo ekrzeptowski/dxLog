@@ -78,7 +78,6 @@ tbody a:hover {
 }
 
 .message {
-    position: absolute;
     background: white;
     height: 100%;
     width: 100%;
@@ -149,8 +148,19 @@ form.addlog{
 }
 
 .addlog input, .addlog select {
-    font-size: 14px;
-    margin: 5px 5px;
+	font-size: 14px;
+	margin: 5px;
+	padding: 1px;
+	border: 1px solid #4e4e4e;
+	border-radius: 2px;
+}
+
+.addlog input{
+	padding: 2px;
+}
+
+.addlog input[type=date] {
+    padding: 0;
 }
 
 #station, #transmitter {

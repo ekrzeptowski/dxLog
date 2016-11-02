@@ -347,7 +347,11 @@ app.controller("SingleTransmitter", function($scope, $filter, $stateParams, $loc
 });
 
 app.controller("NewLogForm", function($scope, StationsService, Upload, $timeout) {
-    // vars setup
+    // clear formData
+    delete StationsService.messages.success;
+    delete StationsService.messages.error;
+
+		// vars setup
     $scope.formData = {};
     $scope.formData.location = {};
     $scope.formData.pol = "h";
@@ -415,14 +419,9 @@ app.controller("NewLogForm", function($scope, StationsService, Upload, $timeout)
             $scope.formData.audio = $scope.file.name;
         }
         StationsService.post($scope.formData);
-    };
-
-    // clear formData after page leave
-    $scope.clearForm = function() {
         delete StationsService.messages.success;
         delete StationsService.messages.error;
-        delete $scope.formData;
-    }
+    };
 
     // CSVUserList parse function
     $scope.parseCSV = function() {

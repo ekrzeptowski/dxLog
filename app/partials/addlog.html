@@ -1,14 +1,12 @@
 <div ng-if="messages.error" role="alert" class="message text-danger">
     <div>{{messages.error}}</div>
-    <a ng-click="clearForm()" href="/">Return</a>
 </div>
 <div ng-if="messages.success" role="alert" class="message text-success">
     <div>{{messages.success}}</div>
-    <a ng-click="clearForm()" href="/">Return</a>
 </div>
 
-<form class="addlog" ng-submit="sendForm()" name="logData">
-    <input type="number" placeholder="Frequency" style="width: 6em;" step="0.01" ng-model="formData.freq" required>
+<form ng-if="!messages.success" class="addlog" ng-submit="sendForm()" name="logData">
+    <input type="number" placeholder="Frequency" style="width: 7em;" step="0.01" ng-model="formData.freq" required>
     <select value="h" ng-model="formData.pol">
       <option>h</option>
       <option>v</option>
@@ -40,5 +38,3 @@
 		<audio controls ngf-src="file"></audio>
     <input type="submit">
 </form>
-
-<p><a href="/">return</a></p>
