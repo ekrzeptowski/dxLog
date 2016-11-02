@@ -14,7 +14,7 @@ function generateToken(user) {
     iat: moment().unix(),
     exp: moment().add(7, 'days').unix()
   };
-  return jwt.sign(payload, process.env.TOKEN_SECRET || "super mega wielki tajny sekret");
+  return jwt.sign(payload, process.env.TOKEN_SECRET);
 }
 
 /**
