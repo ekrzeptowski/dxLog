@@ -9,18 +9,18 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider, $auth
             })
             .state('station', {
                 url: '/station/:station',
-                templateUrl: 'partials/station.html',
-                controller: 'SingleStation'
+                templateUrl: 'partials/main.html',
+                controller: 'MainCtrl'
             })
             .state('country', {
                 url: '/country/:itu',
-                templateUrl: 'partials/country.html',
-                controller: 'SingleCountry'
+                templateUrl: 'partials/main.html',
+                controller: 'MainCtrl'
             })
             .state('transmitter', {
                 url: "/transmitter/:site",
-                templateUrl: 'partials/transmitter.html',
-                controller: 'SingleTransmitter'
+                templateUrl: 'partials/main.html',
+                controller: 'MainCtrl'
             })
             .state('addlog', {
                 url: '/addlog',
@@ -80,11 +80,11 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider, $auth
                 template: '<div>Page not found</div>',
             });
 
-						$urlRouterProvider.otherwise(function($injector, $location){
-						   var state = $injector.get('$state');
-						   state.go('404');
-						   return $location.path();
-						});
+        $urlRouterProvider.otherwise(function($injector, $location) {
+            var state = $injector.get('$state');
+            state.go('404');
+            return $location.path();
+        });
 
         $locationProvider.html5Mode(true);
 
@@ -180,7 +180,7 @@ app.filter('unique', function() {
     };
 });
 
-app.controller("MainCtrl", function($scope, $http, $filter, $resource, StationsService, ColorService, $sce) {
+app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams, $resource, StationsService, ColorService, $sce, NgMap) {
     // default sorting settings
     $scope.col = 'freq';
     $scope.reverse = false;
@@ -190,13 +190,68 @@ app.controller("MainCtrl", function($scope, $http, $filter, $resource, StationsS
     }
     $scope.freqs = [];
 
+		$scope.rx = [49.34, 19.84];
+
+		$scope.state = $state;
+
+		$scope.url = function() {
+    	switch ($state.current.name) {
+    		case "index":
+    			return "logs";
+    			break;
+				case "station":
+					return "network/" + $stateParams.station;
+					break;
+				case "country":
+					return "itu/" + $stateParams.itu;
+					break;
+				case "transmitter":
+					return "location/" + $stateParams.site;
+					break;
+    		default:
+    			break;
+    	}
+		};
+
     // fetch data
-    $scope.stations = StationsService.query("logs");
+    $scope.stations = StationsService.query($scope.url());
     $scope.stations.$promise.then(function() {
         $scope.total = $scope.stations.length;
         ColorService.set($scope.stations, $scope.freqs);
+				switch ($state.current.name) {
+					case "country":
+						var loc = $scope.stations[0].location;
+						$scope.itu = loc.itu;
+		        $scope.title = loc.country + " (" + loc.itu + ")";
+		        $scope.transmitters = $filter('unique')($scope.stations, "location._id");
+						break;
+					case "station":
+						$scope.title = $scope.stations[0].station;
+						$scope.transmitters = $scope.stations;
+						break;
+					case "transmitter":
+						var loc = $scope.stations[0].location;
+						$scope.transmitter = loc;
+						$scope.title = loc.site + ", " + loc.country + " (" + loc.qrb + "km)";
+						break;
+					default:
+						break;
+				}
     });
-    $scope.itus = StationsService.query("stats/itu");
+		switch ($state.current.name) {
+			case "index":
+				$scope.itus = StationsService.query("stats/itu");
+				break;
+			default:
+				break;
+		}
+
+		// map click function
+		$scope.mapClick = function(aaa, url) {
+				$state.go("transmitter", {
+						site: url._id
+				});
+		};
 
     // set class service
     $scope.color = function(col, source, name) {
@@ -225,125 +280,6 @@ app.controller("FreqStats", function($scope, StationsService) {
         }));
     });
 
-});
-
-app.controller("SingleCountry", function($scope, $filter, $state, $stateParams, $location, StationsService, ColorService, $sce, NgMap) {
-    // default sorting settings
-    $scope.col = 'freq';
-    $scope.reverse = false;
-
-    $scope.freqs = [];
-
-    // fetch data from Api
-    $scope.stations = StationsService.query("itu/" + $stateParams.itu);
-    $scope.stations.$promise.then(function() {
-        var loc = $scope.stations[0].location;
-        ColorService.set($scope.stations, $scope.freqs);
-        $scope.itu = loc.itu;
-        $scope.title = loc.country + " (" + loc.itu + ")";
-        $scope.transmitters = $filter('unique')($scope.stations, "location._id");
-    });
-
-    $scope.rx = [49.34, 19.84];
-
-    // map click function
-    $scope.mapClick = function(aaa, url) {
-        $state.go("transmitter", {
-            site: url._id
-        });
-    };
-
-    // set class service
-    $scope.color = function(col, source, name) {
-        return ColorService.filter(col, source, name);
-    }
-
-    $scope.playAudio = function(file) {
-        $scope.audio = file;
-        $scope.audioUrl = $sce.trustAsResourceUrl("audio/" + file);
-    }
-
-    //sort logic
-    $scope.order = function(col) {
-        $scope.reverse = ($scope.col === col || $scope.col[0] === col[0]) ? !$scope.reverse : false;
-        $scope.col = col;
-    };
-});
-
-app.controller("SingleStation", function($scope, $filter, $state, $stateParams, $location, StationsService, ColorService, $sce) {
-    // default sorting settings
-    $scope.col = 'freq';
-    $scope.reverse = false;
-
-    $scope.freqs = [];
-
-    // fetch data from Api
-    $scope.stations = StationsService.query("network/" + $stateParams.station);
-    $scope.stations.$promise.then(function() {
-        ColorService.set($scope.stations, $scope.freqs);
-        $scope.title = $scope.stations[0].station;
-    });
-
-    $scope.rx = [49.34, 19.84];
-
-    // map click function
-    $scope.mapClick = function(aaa, url) {
-        $state.go("transmitter", {
-            site: url._id
-        });
-    };
-
-    // set class service
-    $scope.color = function(col, source, name) {
-        return ColorService.filter(col, source, name);
-    }
-
-    $scope.playAudio = function(file) {
-        $scope.audio = file;
-        $scope.audioUrl = $sce.trustAsResourceUrl("audio/" + file);
-    }
-
-    //sort logic
-    $scope.order = function(col) {
-        $scope.reverse = ($scope.col === col || $scope.col[0] === col[0]) ? !$scope.reverse : false;
-        $scope.col = col;
-    };
-});
-
-app.controller("SingleTransmitter", function($scope, $filter, $stateParams, $location, StationsService, ColorService, $sce) {
-    $scope.title = "";
-    // default sorting settings
-    $scope.col = 'freq';
-    $scope.reverse = false;
-
-    $scope.freqs = [];
-
-    // fetch data from Api
-    $scope.stations = StationsService.query("location/" + $stateParams.site);
-    $scope.stations.$promise.then(function() {
-        var loc = $scope.stations[0].location;
-        $scope.transmitter = loc;
-        ColorService.set($scope.stations, $scope.freqs);
-        $scope.title = loc.site + ", " + loc.country + " (" + loc.qrb + "km)";
-    });
-
-    $scope.rx = [49.34, 19.84];
-
-    // set class service
-    $scope.color = function(col, source, name) {
-        return ColorService.filter(col, source, name);
-    }
-
-    $scope.playAudio = function(file) {
-        $scope.audio = file;
-        $scope.audioUrl = $sce.trustAsResourceUrl("audio/" + file);
-    }
-
-    // sort logic
-    $scope.order = function(col) {
-        $scope.reverse = ($scope.col === col || $scope.col[0] === col[0]) ? !$scope.reverse : false;
-        $scope.col = col;
-    };
 });
 
 app.controller("NewLogForm", function($scope, StationsService, Upload, $timeout) {
