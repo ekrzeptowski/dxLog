@@ -345,14 +345,14 @@ app.controller("NewLogForm", function($scope, StationsService, Upload, $timeout)
     };
 
     $scope.log = function() {
-            console.log($scope.formData);
-            console.log($scope.file);
+            console.log(this.formData);
+            console.log(this.file);
         }
         // form send function
     $scope.sendForm = function() {
-        if ($scope.file) {
-            $scope.upload($scope.file);
-            $scope.formData.audio = $scope.file.name;
+        if (this.file) {
+            $scope.upload(this.file);
+            $scope.formData.audio = this.file.name;
         }
         StationsService.post($scope.formData);
         delete StationsService.messages.success;
