@@ -13,6 +13,9 @@ var moment = require('moment');
 var request = require('request');
 var multer = require('multer');
 
+// Load variables
+require('dotenv').config();
+
 // Models
 var User = require('./models/User');
 require('./models/Logs');
