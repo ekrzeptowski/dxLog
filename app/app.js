@@ -226,11 +226,15 @@ app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams
                 loc = $scope.stations[0].location;
                 $scope.itu = loc.itu;
                 $scope.title = loc.country + " (" + loc.itu + ")";
+                // filter unique transmitters
                 $scope.transmitters = $filter('unique')($scope.stations, "location._id");
                 break;
             case "station":
                 $scope.title = $scope.stations[0].station;
-                $scope.transmitters = $scope.stations;
+                $scope.transmitters = [];
+                angular.forEach($scope.stations, function(val, index){
+                  $scope.transmitters.push(val.location);
+                });
                 break;
             case "transmitter":
                 loc = $scope.stations[0].location;
