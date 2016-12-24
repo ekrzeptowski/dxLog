@@ -130,17 +130,17 @@ app.factory('StationsService', function($resource) {
                     messages.success = "Item has been added successfully";
                 },
                 function(err) {
-                    messages.error = "Error occured"
+                    messages.error = "Error occured";
                 });
         }
-    }
+    };
 });
 
 app.service('ColorService', function() {
     this.set = function(source, dest) {
         angular.forEach(source, function(value, key) {
             if (dest.findIndex(function(x) {
-                    return x.freq === source[key].freq
+                    return x.freq === source[key].freq;
                 }) == -1) {
                 dest.push({
                     freq: source[key].freq
@@ -148,7 +148,7 @@ app.service('ColorService', function() {
             }
         });
         angular.forEach(dest, function(value, key) {
-            if (key % 2 == 0) {
+            if (key % 2 === 0) {
                 dest[key].even = false;
             } else {
                 dest[key].even = true;
@@ -159,10 +159,10 @@ app.service('ColorService', function() {
     this.filter = function(col, source, name) {
         if (col == "freq") {
             return source[source.findIndex(function(x) {
-                return x.freq === name
+                return x.freq === name;
             })].even;
         }
-    }
+    };
 });
 app.filter('unique', function() {
     return function(collection, keyname) {
@@ -187,76 +187,79 @@ app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams
     $scope.ituFilter = {};
     $scope.setFilter = function(item) {
         $scope.ituFilter.itu = item;
-    }
+    };
     $scope.freqs = [];
 
-		$scope.rx = [49.34, 19.84];
+    $scope.rx = [49.34, 19.84];
 
-		$scope.state = $state;
+    $scope.state = $state;
 
-		$scope.url = function() {
-    	switch ($state.current.name) {
-    		case "index":
-    			return "logs";
-    			break;
-				case "station":
-					return "network/" + $stateParams.station;
-					break;
-				case "country":
-					return "itu/" + $stateParams.itu;
-					break;
-				case "transmitter":
-					return "location/" + $stateParams.site;
-					break;
-    		default:
-    			break;
-    	}
-		};
+    $scope.url = function() {
+        var url;
+        switch ($state.current.name) {
+            case "index":
+                url = "logs";
+                break;
+            case "station":
+                url = "network/" + $stateParams.station;
+                break;
+            case "country":
+                url = "itu/" + $stateParams.itu;
+                break;
+            case "transmitter":
+                url = "location/" + $stateParams.site;
+                break;
+            default:
+                break;
+        }
+        return url;
+    };
 
     // fetch data
     $scope.stations = StationsService.query($scope.url());
     $scope.stations.$promise.then(function() {
         $scope.total = $scope.stations.length;
         ColorService.set($scope.stations, $scope.freqs);
-				switch ($state.current.name) {
-					case "country":
-						var loc = $scope.stations[0].location;
-						$scope.itu = loc.itu;
-		        $scope.title = loc.country + " (" + loc.itu + ")";
-		        $scope.transmitters = $filter('unique')($scope.stations, "location._id");
-						break;
-					case "station":
-						$scope.title = $scope.stations[0].station;
-						$scope.transmitters = $scope.stations;
-						break;
-					case "transmitter":
-						var loc = $scope.stations[0].location;
-						$scope.transmitter = loc;
-						$scope.title = loc.site + ", " + loc.country + " (" + loc.qrb + "km)";
-						break;
-					default:
-						break;
-				}
+        var loc;
+        switch ($state.current.name) {
+            case "country":
+                loc = $scope.stations[0].location;
+                $scope.itu = loc.itu;
+                $scope.title = loc.country + " (" + loc.itu + ")";
+                $scope.transmitters = $filter('unique')($scope.stations, "location._id");
+                break;
+            case "station":
+                $scope.title = $scope.stations[0].station;
+                $scope.transmitters = $scope.stations;
+                break;
+            case "transmitter":
+                loc = $scope.stations[0].location;
+                $scope.transmitter = loc;
+                $scope.title = loc.site + ", " + loc.country + " (" + loc.qrb + "km)";
+                break;
+            default:
+                break;
+        }
     });
-		switch ($state.current.name) {
-			case "index":
-				$scope.itus = StationsService.query("stats/itu");
-				break;
-			default:
-				break;
-		}
+    switch ($state.current.name) {
+        case "index":
+            $scope.itus = StationsService.query("stats/itu");
+            break;
+        default:
+            break;
+    }
 
-		// map click function
-		$scope.mapClick = function(aaa, url) {
-				$state.go("transmitter", {
-						site: url._id
-				});
-		};
+    // map click function
+    $scope.mapClick = function(aaa, url) {
+        $state.go("transmitter", {
+            site: url._id
+        });
+    };
 
     // set class service
     $scope.color = function(col, source, name) {
         return ColorService.filter(col, source, name);
-    }
+    };
 
     // sort logic
     $scope.order = function(col) {
@@ -267,7 +270,7 @@ app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams
     $scope.playAudio = function(file) {
         $scope.audio = file;
         $scope.audioUrl = $sce.trustAsResourceUrl("audio/" + file);
-    }
+    };
 });
 
 app.controller("FreqStats", function($scope, StationsService) {
@@ -287,7 +290,7 @@ app.controller("NewLogForm", function($scope, StationsService, Upload, $timeout)
     delete StationsService.messages.success;
     delete StationsService.messages.error;
 
-		// vars setup
+    // vars setup
     $scope.formData = {};
     $scope.formData.location = {};
     $scope.formData.pol = "h";
@@ -345,10 +348,10 @@ app.controller("NewLogForm", function($scope, StationsService, Upload, $timeout)
     };
 
     $scope.log = function() {
-            console.log(this.formData);
-            console.log(this.file);
-        }
-        // form send function
+        console.log(this.formData);
+        console.log(this.file);
+    };
+    // form send function
     $scope.sendForm = function() {
         if (this.file) {
             $scope.upload(this.file);
