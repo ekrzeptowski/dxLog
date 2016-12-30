@@ -156,7 +156,7 @@ exports.ituStats = function(req, res, next) {
 }
 
 exports.addLog = function(req, res, next) {
-    var body = Object.assign({}, req.body);;
+    var body = Object.assign({}, req.body);
     var loc = req.body.location;
 
     function newLog() {
@@ -194,6 +194,26 @@ exports.addLog = function(req, res, next) {
         }
     });
     res.send("Dodano");
+};
+
+exports.updateLog = function(req, res, next) {
+  var data = req.body;
+  delete data.__v;
+  delete data.location.__v;
+  Locat.findByIdAndUpdate(data.location._id, data.location, {}, function(err, locat) {
+      if (err) {
+          return next(err);
+      }
+      data.location = locat._id;
+      Log.findByIdAndUpdate(data._id, data, {} ,function(err, locat) {
+          if (err) {
+              return next(err);
+          }
+          else {
+            res.send("Succes");
+          }
+      });
+  });
 };
 
 exports.audio = function(req,res){

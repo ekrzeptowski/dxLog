@@ -70,10 +70,10 @@ app.use(function(req, res, next) {
 var storage = multer.diskStorage({
    destination: function (req, file, cb) {
      console.log("Dest");
-     cb(null, './public/audio/')
+     cb(null, './public/audio/');
    },
    filename: function (req, file, cb) {
-     cb(null, file.originalname)
+     cb(null, file.originalname);
    }
 });
 
@@ -87,6 +87,7 @@ app.get('/api/stats/freq', routes.freqStats);
 app.get('/api/stats/itu', routes.ituStats);
 app.get('/api/itu/:itu', routes.getCountry);
 app.post('/api/logs', userController.ensureAuthenticated, routes.addLog);
+app.put('/api/logs', userController.ensureAuthenticated, routes.updateLog);
 app.post('/api/upload', userController.ensureAuthenticated, upload.single('file'), routes.audio);
 
 app.put('/account', userController.ensureAuthenticated, userController.accountPut);

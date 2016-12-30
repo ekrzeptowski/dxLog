@@ -11,8 +11,10 @@
       <option>h</option>
       <option>v</option>
     </select>
-    <div angucomplete-alt id="station" placeholder="Station" maxlength="50" pause="100" override-suggestions="true" selected-object="selectedStation" local-data="stations" search-fields="name" title-field="name" minlength="1" input-class="form-control form-control-small" match-class="highlight"></div>
-    <div angucomplete-alt id="transmitter" placeholder="Transmitter" maxlength="80" pause="100" override-suggestions="true" selected-object="selectedTransmitter" local-data="sites" search-fields="site" title-field="site" minlength="1" input-class="form-control form-control-small" match-class="highlight"></div>
+    <div ng-if="ngDialogData" angucomplete-alt id="station" placeholder="Station" initial-value="ngDialogData.entry.station" maxlength="50" pause="100" override-suggestions="true" selected-object="selectedStation" local-data="stations" search-fields="name" title-field="name" minlength="1" input-class="form-control form-control-small" match-class="highlight"></div>
+    <div ng-if="!ngDialogData" angucomplete-alt id="station" placeholder="Station" maxlength="50" pause="100" override-suggestions="true" selected-object="selectedStation" local-data="stations" search-fields="name" title-field="name" minlength="1" input-class="form-control form-control-small" match-class="highlight"></div>
+    <div ng-if="ngDialogData" angucomplete-alt id="transmitter" placeholder="Transmitter" initial-value="ngDialogData.entry.location.site" maxlength="80" pause="100" override-suggestions="true" selected-object="selectedTransmitter" local-data="sites" search-fields="site" title-field="site" minlength="1" input-class="form-control form-control-small" match-class="highlight"></div>
+    <div ng-if="!ngDialogData" angucomplete-alt id="transmitter" placeholder="Transmitter" maxlength="80" pause="100" override-suggestions="true" selected-object="selectedTransmitter" local-data="sites" search-fields="site" title-field="site" minlength="1" input-class="form-control form-control-small" match-class="highlight"></div>
     <input type="text" placeholder="ITU" style="width: 3em;" pattern="[A-Z]{3}" title="Three letter country code" ng-model="formData.location.itu">
     <input type="text" placeholder="Country" ng-model="formData.location.country">
     <input type="number" placeholder="Lat" step="0.00000001" ng-model="formData.location.lat">

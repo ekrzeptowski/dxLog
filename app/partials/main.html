@@ -34,6 +34,7 @@
 <table class="table">
     <thead>
         <tr>
+            <td ng-if="isAuthenticated()"></td>
             <td ng-class="{up: col == 'freq', down: col == 'freq' && reverse}" ng-click="order('freq')">Freq</td>
             <td ng-class="{up: col == 'station', down: col == 'station' && reverse}" ng-click="order('station')">Station</td>
             <td ng-if="state.current.name != 'transmitter'" ng-class="{up: col[0] == 'location.itu', down: col[0] == 'location.itu' && reverse}" ng-click="order(['location.itu', 'location.site'])">ITU / Location</td>
@@ -47,6 +48,7 @@
         </tr>
     </thead>
     <tr ng-repeat="item in stations | orderBy:col:reverse" ng-class="color(col, freqs, item.freq) ? 'even' : 'odd'">
+        <td ng-if="isAuthenticated()"><a ng-click="editLog(item)">Edit</a></td>
         <td>{{item.freq | number : 1}}{{item.pol}}</td>
         <td class="left">
             <a ng-href="station/{{item.station}}">{{item.station}}</a>

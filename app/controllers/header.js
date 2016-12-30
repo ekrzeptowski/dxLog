@@ -10,8 +10,8 @@ angular.module('dxLog')
 
         $scope.addLog = function() {
             ngDialog.open({
-                template: 'partials/addlog.html',
-                controller: 'NewLogForm',
+                template: 'partials/logform.html',
+                controller: 'LogForm',
                 closeByNavigation: true,
                 className: 'ngdialog-theme-plain'
             });

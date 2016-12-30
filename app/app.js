@@ -127,7 +127,19 @@ app.factory('StationsService', function($resource) {
             $resource(Api + "logs").save(data,
                 function(resp, headers) {
                     //success callback
-                    messages.success = "Item has been added successfully";
+                    messages.success = "Item has been successfully added";
+                },
+                function(err) {
+                    messages.error = "Error occured";
+                });
+        },
+        put: function(data) {
+            $resource(Api + "logs",{},{update: {
+              method: 'PUT'
+            }}).update(data,
+                function(resp, headers) {
+                    //success callback
+                    messages.success = "Item has been successfully modified";
                 },
                 function(err) {
                     messages.error = "Error occured";
@@ -180,7 +192,7 @@ app.filter('unique', function() {
     };
 });
 
-app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams, $resource, StationsService, ColorService, $sce, NgMap) {
+app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams, $auth, $resource, StationsService, ColorService, $sce, NgMap, ngDialog) {
     // default sorting settings
     $scope.col = 'freq';
     $scope.reverse = false;
@@ -193,6 +205,23 @@ app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams
     $scope.rx = [49.34, 19.84];
 
     $scope.state = $state;
+
+    $scope.isAuthenticated = function() {
+        return $auth.isAuthenticated();
+    };
+
+    $scope.editLog = function(entry) {
+        ngDialog.open({
+            template: 'partials/logform.html',
+            controller: 'LogForm',
+            closeByNavigation: true,
+            className: 'ngdialog-theme-plain',
+            data: {
+                editMode: true,
+                entry: entry
+            }
+        });
+    };
 
     $scope.url = function() {
         var url;
@@ -232,8 +261,8 @@ app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams
             case "station":
                 $scope.title = $scope.stations[0].station;
                 $scope.transmitters = [];
-                angular.forEach($scope.stations, function(val, index){
-                  $scope.transmitters.push(val.location);
+                angular.forEach($scope.stations, function(val, index) {
+                    $scope.transmitters.push(val.location);
                 });
                 break;
             case "transmitter":
@@ -289,7 +318,7 @@ app.controller("FreqStats", function($scope, StationsService) {
 
 });
 
-app.controller("NewLogForm", function($scope, StationsService, Upload, $timeout) {
+app.controller("LogForm", function($scope, StationsService, Upload, $timeout) {
     // clear formData
     delete StationsService.messages.success;
     delete StationsService.messages.error;
@@ -302,6 +331,13 @@ app.controller("NewLogForm", function($scope, StationsService, Upload, $timeout)
     $scope.messages = StationsService.messages;
     $scope.stations = [];
     $scope.sites = [];
+
+    if ($scope.ngDialogData) {
+      if ($scope.ngDialogData.editMode) {
+        $scope.formData = $scope.ngDialogData.entry;
+        $scope.formData.firstLog = new Date($scope.formData.firstLog);
+      }
+    }
 
     // autocomplete click action
     $scope.selectedStation = function(selected) {
@@ -354,6 +390,7 @@ app.controller("NewLogForm", function($scope, StationsService, Upload, $timeout)
     $scope.log = function() {
         console.log(this.formData);
         console.log(this.file);
+        console.log($scope.ngDialogData);
     };
     // form send function
     $scope.sendForm = function() {
@@ -361,7 +398,12 @@ app.controller("NewLogForm", function($scope, StationsService, Upload, $timeout)
             $scope.upload(this.file);
             $scope.formData.audio = this.file.name;
         }
-        StationsService.post($scope.formData);
+        if ($scope.ngDialogData){
+          StationsService.put($scope.formData);
+        }
+        else {
+          StationsService.post($scope.formData);
+        }
         delete StationsService.messages.success;
         delete StationsService.messages.error;
     };
