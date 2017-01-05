@@ -11,11 +11,13 @@
     "body-parser": "~1.15.1",
     "compression": "^1.6.2",
     "cookie-parser": "^1.4.3",
+    "csv-parse": "^1.1.7",
     "debug": "~2.2.0",
     "dotenv": "^2.0.0",
     "ejs": "^2.5.2",
     "express": "~4.13.4",
     "express-validator": "^2.20.8",
+    "iconv-lite": "^0.4.15",
     "jade": "~1.11.0",
     "jsonwebtoken": "^7.1.9",
     "moment": "^2.15.1",
@@ -24,7 +26,8 @@
     "multer": "^1.2.0",
     "nodemailer": "^2.6.0",
     "request": "^2.75.0",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "striplines": "^1.0.2"
   },
   "devDependencies": {
     "babel-preset-latest": "^6.16.0",

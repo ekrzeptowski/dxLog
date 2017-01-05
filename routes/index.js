@@ -1,8 +1,14 @@
 var mongoose = require('mongoose');
 var Log = mongoose.model('Log');
 var Locat = mongoose.model('Locat');
+var Userlist = mongoose.model('Userlist');
 
 var multer = require('multer');
+var fs = require('fs');
+var parse = require('csv-parse');
+var striplines = require('striplines');
+var iconv = require('iconv-lite');
+
 
 /* GET home page. */
 
@@ -220,4 +226,77 @@ exports.audio = function(req,res){
 	console.log(req.body);
 	console.log(req.file);
 	res.status(204).end();
+};
+
+exports.userlistQuery = function (req, res, next) {
+  Userlist.find({
+      'ITU': req.params.itu
+  }).exec(function(err, log) {
+      if (err) {
+          return next(err);
+      }
+
+      res.send(log);
+  });
+}
+
+exports.userlistUpload = function(req, res, next) {
+    console.log(req);
+
+    function parseCSVFile(sourceFilePath, columns, onNewRecord, handleError, done) {
+        var source = fs.createReadStream(sourceFilePath);
+
+        var linesRead = 0;
+
+        var parser = parse({
+            delimiter: '\t',
+            columns: columns,
+            auto_parse: true
+        });
+
+        parser.on("data", function(record) {
+            // console.log(record);
+            [record.unk2, record.unk3, record.unk4, record.idd, record.unk5].forEach(e => delete record[e]);
+            record.freq /= 1000;
+            record.transmitter = record.transmitter.replace(/&#(\d+);/g, function(match, match2) {
+              return String.fromCharCode(+match2);
+            }).replace(/([/])/g, " - ").replace(/(\s*\(\d*\w*\))/g, "");
+            var userlist = new Userlist(record);
+            userlist.save(function(err, log) {
+                if (err) {
+                    return next(err);
+                }
+            });
+            linesRead++;
+        });
+
+        parser.on("error", function(error) {
+            handleError(error);
+        });
+
+        parser.on("end", function() {
+            done(linesRead);
+        });
+
+        source.pipe(iconv.decodeStream('win1252'))
+            .pipe(iconv.encodeStream('utf8'))
+            .pipe(striplines(9))
+            .pipe(parser);
+    }
+
+    var filePath = req.file.path;
+    console.log(filePath);
+
+    function onNewRecord(record) {}
+
+    function onError(error) {
+        console.log(error);
+    }
+
+    function done(linesRead) {
+        res.send(200, linesRead);
+    }
+
+    var columns = ["freq", "ITU", "lang", "station", "sss", "transmitter", "lon", "lat", "unk1", "pmax", "pmaxdir", "unk2", "unk3", "unk4", "ps", "pi", "pol", "idd"];
+    parseCSVFile(filePath, columns, onNewRecord, onError, done);
 };
