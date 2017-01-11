@@ -229,16 +229,31 @@ exports.audio = function(req,res){
 };
 
 exports.userlistQuery = function (req, res, next) {
-  Userlist.find({
-      'ITU': req.params.itu
-  }).exec(function(err, log) {
-      if (err) {
-          return next(err);
-      }
+  if (req.params.itu == "itus") {
+    Userlist.aggregate([
+        {$group: {
+          _id: '$ITU'
+        }},
+        {$sort: {_id: 1}}
+    ]).exec(function(err, log) {
+        if (err) {
+            return next(err);
+        }
 
-      res.send(log);
-  });
-}
+        res.send(log);
+    });
+  } else {
+    Userlist.find({
+        'ITU': req.params.itu
+    }).exec(function(err, log) {
+        if (err) {
+            return next(err);
+        }
+
+        res.send(log);
+    });
+  }
+};
 
 exports.userlistUpload = function(req, res, next) {
     console.log(req);
