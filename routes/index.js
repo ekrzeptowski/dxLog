@@ -269,15 +269,31 @@ exports.userlistUpload = function(req, res, next) {
             auto_parse: true
         });
 
-        parser.on("data", function(record) {
-            // console.log(record);
-            [record.unk2, record.unk3, record.unk4, record.idd, record.unk5].forEach(e => delete record[e]);
-            record.freq /= 1000;
-            record.transmitter = record.transmitter.replace(/&#(\d+);/g, function(match, match2) {
+        parser.on("data", function(ul) {
+            var garbage = ["unk1", "unk2", "unk3", "unk4", "unk5"]; // Unnecesary data array
+            for (let i = 0; i < garbage.length; i++) {
+              delete ul[garbage[i]];
+            }
+            ul.freq /= 1000;
+            // Replace HTML charcodes to characters and clean strings
+            ul.station = ul.station.replace(/&#(\d+);/g, function(match, match2) {
+              return String.fromCharCode(+match2);
+            });
+            ul.transmitter = ul.transmitter.replace(/&#(\d+);/g, function(match, match2) {
               return String.fromCharCode(+match2);
             }).replace(/([/])/g, " - ").replace(/(\s*\(\d*\w*\))/g, "");
-            var userlist = new Userlist(record);
-            userlist.save(function(err, log) {
+            // Clone station array
+            var stations = JSON.parse(JSON.stringify(ul));
+            var stationsGarbage = ["ITU", "transmitter", "lon", "lat"]; // Remove transmitter data from station array
+            for (let i = 0; i < stationsGarbage.length; i++) {
+              delete stations[stationsGarbage[i]];
+            }
+            // Remove station data from transmitter array
+            var transGarbage = ["freq", "lang", "station", "modulation", "pmax", "pmaxdir", "ps", "pi", "pol", "fmscanId"];
+            for (let i = 0; i < transGarbage.length; i++) {
+              delete ul[transGarbage[i]];
+            }
+            Userlist.update({transmitter: ul.transmitter}, {$set: ul, $push: {stations: stations}}, {upsert: true}, function(err, log) {
                 if (err) {
                     return next(err);
                 }
@@ -312,6 +328,7 @@ exports.userlistUpload = function(req, res, next) {
         res.send(200, linesRead);
     }
 
-    var columns = ["freq", "ITU", "lang", "station", "sss", "transmitter", "lon", "lat", "unk1", "pmax", "pmaxdir", "unk2", "unk3", "unk4", "ps", "pi", "pol", "idd"];
+    // Columns in csv file
+    var columns = ["freq", "ITU", "lang", "station", "modulation", "transmitter", "lon", "lat", "unk1", "pmax", "pmaxdir", "unk2", "unk3", "unk4", "ps", "pi", "pol", "fmscanId"];
     parseCSVFile(filePath, columns, onNewRecord, onError, done);
 };

@@ -1,21 +1,22 @@
 var mongoose = require('mongoose');
 
 var LogSchema = new mongoose.Schema({
-    freq: Number,
     ITU: String,
-    lang: String,
-    station: String,
-    sss: String,
-    transmitter: String,
+    transmitter: {type: String, unique: true},
     lon: Number,
     lat: Number,
-    unk1: String,
-    pmax: Number,
-    pmaxdir: String,
-    ps: String,
-    pi: String,
-    pol: String,
-    idd: Number,
+    stations: [{
+      freq: Number,
+      lang: String,
+      station: String,
+      modulation: String,
+      pmax: Number,
+      pmaxdir: String,
+      ps: String,
+      pi: String,
+      pol: String,
+      fmscanId: Number,
+    }]
 });
 
 mongoose.model('Userlist', LogSchema);
