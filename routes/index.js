@@ -284,7 +284,7 @@ exports.userlistUpload = function(req, res, next) {
             }).replace(/([/])/g, " - ").replace(/(\s*\(\d*\w*\))/g, "");
             // Clone station array
             var stations = JSON.parse(JSON.stringify(ul));
-            var stationsGarbage = ["ITU", "transmitter", "lon", "lat"]; // Remove transmitter data from station array
+            var stationsGarbage = ["ITU", "transmitter", "lat", "lon"]; // Remove transmitter data from station array
             for (let i = 0; i < stationsGarbage.length; i++) {
               delete stations[stationsGarbage[i]];
             }
@@ -329,6 +329,6 @@ exports.userlistUpload = function(req, res, next) {
     }
 
     // Columns in csv file
-    var columns = ["freq", "ITU", "lang", "station", "modulation", "transmitter", "lon", "lat", "unk1", "pmax", "pmaxdir", "unk2", "unk3", "unk4", "ps", "pi", "pol", "fmscanId"];
+    var columns = ["freq", "ITU", "lang", "station", "modulation", "transmitter", "lat", "lon", "unk1", "pmax", "pmaxdir", "unk2", "unk3", "unk4", "ps", "pi", "pol", "fmscanId"];
     parseCSVFile(filePath, columns, onNewRecord, onError, done);
 };
