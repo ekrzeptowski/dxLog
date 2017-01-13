@@ -15,7 +15,7 @@ var LogSchema = new mongoose.Schema({
       ps: String,
       pi: String,
       pol: String,
-      fmscanId: Number,
+      fmscanId: {type: Number, unique: true}
     }]
 });
 
