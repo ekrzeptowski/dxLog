@@ -399,11 +399,6 @@ app.controller("LogForm", function($scope, StationsService, Upload, $timeout) {
         });
     };
 
-    $scope.log = function() {
-        console.log(this.formData);
-        console.log(this.file);
-        console.log($scope.ngDialogData);
-    };
     // form send function
     $scope.sendForm = function() {
         if (this.file) {
