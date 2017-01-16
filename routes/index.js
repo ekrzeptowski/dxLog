@@ -1,13 +1,12 @@
 var mongoose = require('mongoose');
 var Log = mongoose.model('Log');
-var Locat = mongoose.model('Locat');
 
 var multer = require('multer');
 
 /* GET home page. */
 
 exports.getLogs = function(req, res, next) {
-    Log.find().sort({freq: 1}).populate('location').exec(function(err, log) {
+    Log.find().exec(function(err, log) {
         if (err) {
             return next(err);
         }
@@ -17,19 +16,9 @@ exports.getLogs = function(req, res, next) {
 };
 
 exports.getCountry = function(req, res, next) {
-    Log.aggregate([
-      {
-        $lookup: {
-          from: 'locats',
-          localField: 'location',
-          foreignField: '_id',
-          as: 'location'
-        }
-      },
-      {$unwind: '$location'},
-      {$match: {'location.itu': req.params.itu}},
-			{$sort: {'freq': 1}}
-    ]).exec(function(err, log) {
+    Log.find({
+      'itu': req.params.itu
+    }).exec(function(err, log) {
         if (err) {
             return next(err);
         }
@@ -39,9 +28,7 @@ exports.getCountry = function(req, res, next) {
 };
 
 exports.getStation = function(req, res, next) {
-    Log.find({
-        'station': req.params.station
-    }).sort({freq: 1}).populate('location').exec(function(err, log) {
+    Log.find({stations: {$elemMatch: {station: req.params.station}}}, {'transmitter': 1, 'itu': 1, 'lat': 1, 'lon': 1, 'qrb': 1, 'stations': {$elemMatch: {station: req.params.station}}}).exec(function(err, log) {
         if (err) {
             return next(err);
         }
@@ -52,8 +39,8 @@ exports.getStation = function(req, res, next) {
 
 exports.getTransmiter = function(req, res, next) {
     Log.find({
-        'location': req.params.loc
-    }).sort({freq: 1}).populate('location').exec(function(err, log) {
+        '_id': req.params.loc
+    }).exec(function(err, log) {
         if (err) {
             return next(err);
         }
@@ -63,22 +50,6 @@ exports.getTransmiter = function(req, res, next) {
 };
 
 exports.getAutocomplete = function(req, res, next) {
-  /*if(req.params.type == "station"){
-    Log.aggregate([
-      { $group: {
-        _id: null,
-        stations: {$addToSet: {station: '$station'}}
-
-      }}
-    ]).exec(function(err, log) {
-        if (err) {
-            return next(err);
-        }
-
-        res.send(log);
-    });
-  }
-  else if(req.params.type == "location"){*/
     Log.aggregate([
       {
         $lookup: {
@@ -115,9 +86,10 @@ exports.getAutocomplete = function(req, res, next) {
 
 exports.freqStats = function (req, res, nxt) {
   Log.aggregate([
-    {
+      {$unwind: '$stations'},
+      {
       $group: {
-        _id: '$freq',
+        _id: '$stations.freq',
         count: {$sum: 1}
       }},
       { $sort : { _id : 1 } }
@@ -132,16 +104,9 @@ exports.freqStats = function (req, res, nxt) {
 
 exports.ituStats = function(req, res, next) {
   Log.aggregate([
-    {
-      $lookup: {
-        from: 'locats',
-        localField: 'location',
-        foreignField: '_id',
-        as: 'locat'
-      }},
-      {$unwind: '$locat'},
+      {$unwind: '$stations'},
       {$group: {
-        _id: '$locat.itu',
+        _id: '$itu',
         count: {$sum: 1}
       }},
       {$sort: {count: -1}}
@@ -157,63 +122,30 @@ exports.ituStats = function(req, res, next) {
 
 exports.addLog = function(req, res, next) {
     var body = Object.assign({}, req.body);
-    var loc = req.body.location;
+    var input = req.body;
 
-    function newLog() {
-        console.log(req.body);
-        var log = new Log(req.body);
-        log.save(function(err, log){
-          if(err){ return next(err); }
-        });
-    }
-    Locat.count({
-        "site": loc.site
-    }, function(err, count) {
-        function getId() {
-            Locat.findOne({
-                "site": loc.site
-            }, function(err, locid) {
-                req.body.location = locid._id;
-                newLog();
-            });
-        }
-        if (err) {
-            res.send("Nie");
-            return next(err);
-        }
-        if (count == 1) {
-            getId();
-        } else if (count < 1) {
-            var locat = new Locat(loc);
-            locat.save(function(err, locat) {
-                if (err) {
-                    return next(err);
-                }
-                getId();
-            });
-        }
+    Log.update({transmitter: req.body.transmitter}, {$set: {transmitter: input.transmitter, itu: input.itu, lat: input.lat, lon: input.lon, qrb: input.qrb}, $push: {stations: input.stations}}, {upsert: true}, function(err, log) {
+      res.send("Success");
     });
-    res.send("Dodano");
 };
 
 exports.updateLog = function(req, res, next) {
   var data = req.body;
   delete data.__v;
-  delete data.location.__v;
-  Locat.findByIdAndUpdate(data.location._id, data.location, {}, function(err, locat) {
-      if (err) {
-          return next(err);
-      }
-      data.location = locat._id;
-      Log.findByIdAndUpdate(data._id, data, {} ,function(err, locat) {
-          if (err) {
-              return next(err);
-          }
-          else {
-            res.send("Succes");
-          }
-      });
-  });
+  var station = data.stations;
+  delete data.stations;
+  Log.findOneAndUpdate(
+    { "_id": data._id, "stations._id": station._id },
+    {
+        "$set": {
+            "$": data,
+            "stations.$": station
+        }
+    },
+    function(err,doc) {
+      res.send("Success");
+    }
+  );
 };
 
 exports.audio = function(req,res){

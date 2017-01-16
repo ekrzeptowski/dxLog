@@ -24,10 +24,8 @@
 </h2>
 
 <ng-map ng-if="state.current.name != 'index'" zoom="5" zoom-to-include-markers="auto" disable-default-u-i="true" disable-double-click-zoom="true" draggable="false" zoom-control="false" map-type-id="TERRAIN" default-style="false" scrollwheel="false" center="{{rx}}">
-    <marker ng-if="state.current.name != 'transmitter'" ng-repeat="transmitter in transmitters" position="{{transmitter.lat}}, {{transmitter.long}}" title="{{transmitter.site}}" icon="{url:'tx.png', anchor: [16,28]}" on-click="mapClick({{transmitter}})"></marker>
-    <shape ng-if="state.current.name != 'transmitter'" ng-repeat="transmitter in transmitters" name="polyline" path="[{{rx}}, {{[transmitter.lat, transmitter.long]}}]" geodesic="true" stroke-color="#FF0000" stroke-opacity="0.33" stroke-weight="3"></shape>
-		<marker ng-if="transmitter.lat" position="{{transmitter.lat}}, {{transmitter.long}}" title="{{transmitter.site}}" icon="{url:'tx.png', anchor: [16,28]}"></marker>
-    <shape ng-if="transmitter.lat" name="polyline" path="[{{rx}}, {{[transmitter.lat, transmitter.long]}}]" geodesic="true" stroke-color="#FF0000" stroke-opacity="0.33" stroke-weight="3"></shape>
+    <marker ng-repeat="transmitter in transmitters" position="{{transmitter.lat}}, {{transmitter.lon}}" title="{{transmitter.transmitter}}" icon="{url:'tx.png', anchor: [16,28]}" on-click="mapClick({{transmitter}})"></marker>
+    <shape ng-repeat="transmitter in transmitters" name="polyline" path="[{{rx}}, {{[transmitter.lat, transmitter.lon]}}]" geodesic="true" stroke-color="#FF0000" stroke-opacity="0.33" stroke-weight="3"></shape>
 		<marker position="{{rx}}" title="RX" icon="{url:'rx.png', anchor: [16,28]}"></marker>
 </ng-map>
 
@@ -54,13 +52,13 @@
             <a ng-href="station/{{item.station}}">{{item.station}}</a>
         </td>
         <td ng-if="state.current.name != 'transmitter'" class="left">
-            <span ng-class="{'bold': (item.location.itu != 'POL')}">{{item.location.itu}}</span>
-            <a ng-href="transmitter/{{item.location._id}}">{{item.location.site}}</a>
+            <span ng-class="{'bold': (item.itu != 'POL')}">{{item.itu}}</span>
+            <a ng-href="transmitter/{{item._id}}">{{item.transmitter}}</a>
         </td>
         <td class="rds">{{item.ps}}</td>
         <td class="rds">{{item.pi}}</td>
         <td class="right">{{item.pmax | number : 2}}</td>
-        <td ng-if="state.current.name != 'transmitter'" class="right" ng-class="{'bold': item.location.qrb > 600}">{{item.location.qrb}}</td>
+        <td ng-if="state.current.name != 'transmitter'" class="right" ng-class="{'bold': item.qrb > 600}">{{item.qrb}}</td>
         <td>{{item.firstLog | date:'yyyy-MM-dd'}}</td>
         <td>{{item.mode}}</td>
         <td><img ng-if="item.comment" src="info.png" title="{{item.comment}}">

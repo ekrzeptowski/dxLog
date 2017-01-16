@@ -216,6 +216,8 @@ app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams
 
     $scope.rx = [49.34, 19.84];
 
+    $scope.stations = [];
+
     $scope.state = $state;
 
     $scope.isAuthenticated = function() {
@@ -257,30 +259,35 @@ app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams
     };
 
     // fetch data
-    $scope.stations = StationsService.query($scope.url());
-    $scope.stations.$promise.then(function() {
-        $scope.total = $scope.stations.length;
-        ColorService.set($scope.stations, $scope.freqs);
+    $scope.transmitters = StationsService.query($scope.url());
+    $scope.transmitters.$promise.then(function() {
         var loc;
+        for (var i = 0; i < $scope.transmitters.length; i++) {
+            for (var j = 0; j < $scope.transmitters[i].stations.length; j++) {
+                let currentStation = $scope.transmitters[i].stations[j];
+                currentStation.stationId = currentStation._id;
+                delete currentStation._id;
+                let wyn = Object.assign({}, $scope.transmitters[i], currentStation);
+                delete wyn.stations;
+                $scope.stations.push(wyn);
+            }
+        }
+        ColorService.set($scope.stations, $scope.freqs);
+        $scope.total = $scope.stations.length;
+
         switch ($state.current.name) {
             case "country":
-                loc = $scope.stations[0].location;
+                loc = $scope.stations[0];
                 $scope.itu = loc.itu;
-                $scope.title = loc.country + " (" + loc.itu + ")";
-                // filter unique transmitters
-                $scope.transmitters = $filter('unique')($scope.stations, "location._id");
+                $scope.title = "Country friendly name" + " (" + loc.itu + ")";
                 break;
             case "station":
                 $scope.title = $scope.stations[0].station;
-                $scope.transmitters = [];
-                angular.forEach($scope.stations, function(val, index) {
-                    $scope.transmitters.push(val.location);
-                });
                 break;
             case "transmitter":
-                loc = $scope.stations[0].location;
+                loc = $scope.stations[0];
                 $scope.transmitter = loc;
-                $scope.title = loc.site + ", " + loc.country + " (" + loc.qrb + "km)";
+                $scope.title = loc.transmitter + ", " + "Country friendly name" + " (" + loc.qrb + "km)";
                 break;
             default:
                 break;
@@ -337,34 +344,47 @@ app.controller("LogForm", function($scope, StationsService, Upload, $timeout) {
 
     // vars setup
     $scope.formData = {};
-    $scope.formData.location = {};
-    $scope.formData.pol = "h";
-    $scope.formData.firstLog = new Date();
+
+    if ($scope.ngDialogData) {
+        if ($scope.ngDialogData.editMode) {
+            $scope.formData = angular.copy($scope.ngDialogData.entry);
+        }
+    }
+
+    $scope.formData.stations = {};
+    $scope.formData.stations.pol = "h";
+    $scope.formData.stations.firstLog = new Date();
     $scope.messages = StationsService.messages;
     $scope.stations = [];
     $scope.sites = [];
 
     if ($scope.ngDialogData) {
-      if ($scope.ngDialogData.editMode) {
-        $scope.formData = $scope.ngDialogData.entry;
-        $scope.formData.firstLog = new Date($scope.formData.firstLog);
-      }
+        if ($scope.ngDialogData.editMode) {
+            $scope.formData.stations.firstLog = new Date($scope.formData.firstLog);
+            delete $scope.formData.firstLog;
+            $scope.formData.stations._id = $scope.formData.stationId;
+            delete $scope.formData.stationId;
+            ["freq", "mode", "pmax", "pol", "station", "pi", "ps", "comment", "audio"].forEach(a => {
+                $scope.formData.stations[a] = $scope.formData[a];
+                delete $scope.formData[a];
+            });
+        }
     }
+
 
     // autocomplete click action
     $scope.selectedStation = function(selected) {
-        $scope.formData.station = selected.title || selected.originalObject;
+        $scope.formData.stations.station = selected.title || selected.originalObject;
     };
 
     // autocomplete click action
     $scope.selectedTransmitter = function(selected) {
-        var fD = $scope.formData.location;
+        var fD = $scope.formData;
         var oO = selected.originalObject;
-        fD.site = selected.title || oO;
+        fD.transmitter = selected.title || oO;
         if (selected.title) {
-            fD.country = oO.country;
             fD.itu = oO.itu;
-            fD.long = oO.long;
+            fD.lon = oO.lon;
             fD.lat = oO.lat;
             fD.qrb = oO.qrb;
         }
@@ -403,13 +423,12 @@ app.controller("LogForm", function($scope, StationsService, Upload, $timeout) {
     $scope.sendForm = function() {
         if (this.file) {
             $scope.upload(this.file);
-            $scope.formData.audio = this.file.name;
+            $scope.formData.stations.audio = this.file.name;
         }
-        if ($scope.ngDialogData){
-          StationsService.put($scope.formData);
-        }
-        else {
-          StationsService.post($scope.formData);
+        if ($scope.ngDialogData) {
+            StationsService.put($scope.formData);
+        } else {
+            StationsService.post($scope.formData);
         }
         delete StationsService.messages.success;
         delete StationsService.messages.error;

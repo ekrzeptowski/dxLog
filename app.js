@@ -19,7 +19,6 @@ require('dotenv').config();
 // Models
 var User = require('./models/User');
 require('./models/Logs');
-require('./models/Locations');
 
 // Controllers
 var routes = require('./routes/index');
