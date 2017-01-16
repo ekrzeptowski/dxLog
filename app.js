@@ -79,12 +79,9 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage });
 
 app.get('/api/logs', routes.getLogs);
-app.get('/api/network/:station', routes.getStation);
-app.get('/api/location/:loc', routes.getTransmiter);
 app.get('/api/autocomplete', routes.getAutocomplete);
 app.get('/api/stats/freq', routes.freqStats);
 app.get('/api/stats/itu', routes.ituStats);
-app.get('/api/itu/:itu', routes.getCountry);
 app.post('/api/logs', userController.ensureAuthenticated, routes.addLog);
 app.put('/api/logs', userController.ensureAuthenticated, routes.updateLog);
 app.post('/api/upload', userController.ensureAuthenticated, upload.single('file'), routes.audio);

@@ -18,7 +18,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider, $auth
                 controller: 'MainCtrl'
             })
             .state('transmitter', {
-                url: "/transmitter/:site",
+                url: "/transmitter/:transmitter",
                 templateUrl: 'partials/main.html',
                 controller: 'MainCtrl'
             })
@@ -204,7 +204,7 @@ app.filter('unique', function() {
     };
 });
 
-app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams, $auth, $resource, StationsService, ColorService, $sce, NgMap, ngDialog) {
+app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams, $auth, $resource, StationsService, ColorService, filterFilter, $sce, NgMap, ngDialog) {
     // default sorting settings
     $scope.col = 'freq';
     $scope.reverse = false;
@@ -237,30 +237,15 @@ app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams
         });
     };
 
-    $scope.url = function() {
-        var url;
-        switch ($state.current.name) {
-            case "index":
-                url = "logs";
-                break;
-            case "station":
-                url = "network/" + $stateParams.station;
-                break;
-            case "country":
-                url = "itu/" + $stateParams.itu;
-                break;
-            case "transmitter":
-                url = "location/" + $stateParams.site;
-                break;
-            default:
-                break;
-        }
-        return url;
-    };
-
     // fetch data
-    $scope.transmitters = StationsService.query($scope.url());
+    $scope.transmitters = StationsService.query("logs");
     $scope.transmitters.$promise.then(function() {
+        // filter stations
+        $scope.transmitters = filterFilter($scope.transmitters, {
+          stations: {station: $stateParams.station},
+          itu: $stateParams.itu,
+          _id: $stateParams.transmitter
+        });
         var loc;
         for (var i = 0; i < $scope.transmitters.length; i++) {
             for (var j = 0; j < $scope.transmitters[i].stations.length; j++) {
@@ -272,14 +257,20 @@ app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams
                 $scope.stations.push(wyn);
             }
         }
-        ColorService.set($scope.stations, $scope.freqs);
+        $scope.stations = filterFilter($scope.stations, {
+          station: $stateParams.station
+        });
         $scope.total = $scope.stations.length;
+
+        ColorService.set($filter('orderBy')($scope.stations, 'freq'), $scope.freqs);
+
 
         switch ($state.current.name) {
             case "country":
                 loc = $scope.stations[0];
                 $scope.itu = loc.itu;
-                $scope.title = "Country friendly name" + " (" + loc.itu + ")";
+                // TODO: full country name
+                $scope.title = " (" + loc.itu + ")";
                 break;
             case "station":
                 $scope.title = $scope.stations[0].station;
@@ -287,7 +278,8 @@ app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams
             case "transmitter":
                 loc = $scope.stations[0];
                 $scope.transmitter = loc;
-                $scope.title = loc.transmitter + ", " + "Country friendly name" + " (" + loc.qrb + "km)";
+                // TODO: full country name
+                $scope.title = loc.transmitter + ", " + " (" + loc.qrb + "km)";
                 break;
             default:
                 break;
@@ -304,7 +296,7 @@ app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams
     // map click function
     $scope.mapClick = function(aaa, url) {
         $state.go("transmitter", {
-            site: url._id
+            transmitter: url._id
         });
     };
 

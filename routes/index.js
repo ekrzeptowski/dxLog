@@ -15,40 +15,6 @@ exports.getLogs = function(req, res, next) {
     });
 };
 
-exports.getCountry = function(req, res, next) {
-    Log.find({
-      'itu': req.params.itu
-    }).exec(function(err, log) {
-        if (err) {
-            return next(err);
-        }
-
-        res.send(log);
-    });
-};
-
-exports.getStation = function(req, res, next) {
-    Log.find({stations: {$elemMatch: {station: req.params.station}}}, {'transmitter': 1, 'itu': 1, 'lat': 1, 'lon': 1, 'qrb': 1, 'stations': {$elemMatch: {station: req.params.station}}}).exec(function(err, log) {
-        if (err) {
-            return next(err);
-        }
-
-        res.send(log);
-    });
-};
-
-exports.getTransmiter = function(req, res, next) {
-    Log.find({
-        '_id': req.params.loc
-    }).exec(function(err, log) {
-        if (err) {
-            return next(err);
-        }
-
-        res.send(log);
-    });
-};
-
 exports.getAutocomplete = function(req, res, next) {
     Log.aggregate([
       {
