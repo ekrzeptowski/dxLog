@@ -328,9 +328,14 @@ exports.userlistUpload = function(req, res, next) {
     }
 
     function done(linesRead) {
-        res.send(200, linesRead);
+        res.send(200, "Added " + linesRead + " stations");
     }
+    Userlist.remove().exec(function(err, log) {
+        if (err) {
+            return next(err);
+        }
 
+    });
     // Columns in csv file
     var columns = ["freq", "ITU", "lang", "station", "modulation", "transmitter", "lat", "lon", "unk1", "pmax", "pmaxdir", "unk2", "unk3", "unk4", "ps", "pi", "pol", "fmscanId"];
     parseCSVFile(filePath, columns, onNewRecord, onError, done);
