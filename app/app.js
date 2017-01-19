@@ -480,16 +480,16 @@ app.controller("UserlistBrowser", function($scope, StationsService, ngDialog, Ng
             data: {
                 editMode: false,
                 entry: {
-                    station: entry.station,
-                    freq: entry.freq,
-                    pol: entry.pol,
-                    pmax: entry.pmax,
-                    location: {
-                        itu: entry.ITU,
-                        lat: entry.lat,
-                        long: entry.lon,
-                        site: entry.transmitter,
-                        qrb: entry.qrb
+                    transmitter: entry.transmitter,
+                    itu: entry.ITU,
+                    lat: entry.lat,
+                    lon: entry.lon,
+                    qrb: entry.qrb,
+                    stations: {
+                      station: entry.station,
+                      freq: entry.freq,
+                      pol: entry.pol,
+                      pmax: entry.pmax
                     }
                 }
             }
@@ -505,31 +505,29 @@ app.controller("LogForm", function($scope, StationsService, Upload, $timeout) {
     // vars setup
     $scope.formData = {};
 
-    if ($scope.ngDialogData) {
-        if ($scope.ngDialogData.editMode) {
-            $scope.formData = angular.copy($scope.ngDialogData.entry);
-        }
-    }
-
-    $scope.formData.stations = {};
-    $scope.formData.stations.pol = "h";
-    $scope.formData.stations.firstLog = new Date();
     $scope.messages = StationsService.messages;
     $scope.stations = [];
     $scope.sites = [];
 
     if ($scope.ngDialogData) {
+        $scope.formData = $scope.ngDialogData.entry;
         if ($scope.ngDialogData.editMode) {
             $scope.formData.stations.firstLog = new Date($scope.formData.firstLog);
             delete $scope.formData.firstLog;
             $scope.formData.stations._id = $scope.formData.stationId;
             delete $scope.formData.stationId;
-            $scope.formData.pmax = Math.ceil($scope.formData.pmax * 100) / 100;
             ["freq", "mode", "pmax", "pol", "station", "pi", "ps", "comment", "audio"].forEach(a => {
                 $scope.formData.stations[a] = $scope.formData[a];
                 delete $scope.formData[a];
             });
+          } else {
+          $scope.formData.stations.pmax = Math.ceil($scope.formData.stations.pmax * 100) / 100;
+          $scope.formData.stations.firstLog = new Date();
         }
+    } else {
+      $scope.formData.stations = {};
+      $scope.formData.stations.pol = "h";
+      $scope.formData.stations.firstLog = new Date();
     }
 
 

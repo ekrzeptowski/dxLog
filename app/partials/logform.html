@@ -10,12 +10,12 @@
     <select value="h" ng-model="formData.stations.pol">
       <option>h</option>
       <option>v</option>
+      <option>m</option>
+      <option>c</option>
     </select>
-    <div ng-if="ngDialogData" angucomplete-alt id="station" placeholder="Station" initial-value="formData.stations.station" maxlength="50" pause="100" override-suggestions="true" selected-object="selectedStation" local-data="stations" search-fields="name" title-field="name" minlength="1" input-class="form-control form-control-small" match-class="highlight"></div>
-    <div ng-if="!ngDialogData" angucomplete-alt id="station" placeholder="Station" maxlength="50" pause="100" override-suggestions="true" selected-object="selectedStation" local-data="stations" search-fields="name" title-field="name" minlength="1" input-class="form-control form-control-small" match-class="highlight"></div>
-    <div ng-if="ngDialogData" angucomplete-alt id="transmitter" placeholder="Transmitter" initial-value="formData.transmitter" maxlength="80" pause="100" override-suggestions="true" selected-object="selectedTransmitter" local-data="sites" search-fields="site" title-field="site" minlength="1" input-class="form-control form-control-small" match-class="highlight"></div>
-    <div ng-if="!ngDialogData" angucomplete-alt id="transmitter" placeholder="Transmitter" maxlength="80" pause="100" override-suggestions="true" selected-object="selectedTransmitter" local-data="sites" search-fields="site" title-field="site" minlength="1" input-class="form-control form-control-small" match-class="highlight"></div>
-    <input type="text" placeholder="ITU" style="width: 3em;" pattern="[A-Z]{1-3}" title="Country code" ng-model="formData.itu">
+    <input type="text" id="station" placeholder="Station" ng-model="formData.stations.station">
+    <input type="text" id="transmitter" placeholder="Transmitter" ng-model="formData.transmitter">
+    <input type="text" placeholder="ITU" style="width: 3em;" title="Country code" ng-model="formData.itu">
     <input type="number" placeholder="Lat" step="0.00000001" ng-model="formData.lat">
     <input type="number" placeholder="Long" step="0.00000001" ng-model="formData.lon">
     <input type="text" placeholder="PS" style="width:6em;" ng-model="formData.stations.ps" maxlength="8">
