@@ -19,6 +19,7 @@ require('dotenv').config();
 // Models
 var User = require('./models/User');
 require('./models/Logs');
+require('./models/Userlist');
 
 // Controllers
 var routes = require('./routes/index');
@@ -66,7 +67,7 @@ app.use(function(req, res, next) {
 });
 
 
-var storage = multer.diskStorage({
+var audioStorage = multer.diskStorage({
    destination: function (req, file, cb) {
      console.log("Dest");
      cb(null, './public/audio/');
@@ -76,7 +77,17 @@ var storage = multer.diskStorage({
    }
 });
 
-var upload = multer({ storage: storage });
+var userlistStorage = multer.diskStorage({
+   destination: function (req, file, cb) {
+     console.log("Dest");
+     cb(null, './uploads/');
+   },
+   filename: function (req, file, cb) {
+     cb(null, file.originalname);
+   }
+});
+
+var upload = multer({ storage: audioStorage });
 
 app.get('/api/logs', routes.getLogs);
 app.get('/api/autocomplete', routes.getAutocomplete);
@@ -85,6 +96,8 @@ app.get('/api/stats/itu', routes.ituStats);
 app.post('/api/logs', userController.ensureAuthenticated, routes.addLog);
 app.put('/api/logs', userController.ensureAuthenticated, routes.updateLog);
 app.post('/api/upload', userController.ensureAuthenticated, upload.single('file'), routes.audio);
+app.get('/api/userlist/:itu', userController.ensureAuthenticated, routes.userlistQuery);
+app.post('/api/userlist', userController.ensureAuthenticated, multer({storage: userlistStorage}).single('csvfile'), routes.userlistUpload);
 
 app.put('/account', userController.ensureAuthenticated, userController.accountPut);
 //app.delete('/account', userController.ensureAuthenticated, userController.accountDelete);

@@ -1,5 +1,6 @@
 <div ng-controller="HeaderCtrl" class="container">
   <ul ng-if="isAuthenticated()" class="list-inline">
+    <li><a href="/newlog" ng-class="{ active: isActive('/newlog')}">New log</a></li>
     <li><a href="#" ng-click="addLog()" ng-class="{ active: isActive('/addlog')}">Add items</a></li>
     <li><a href="/account" ng-class="{ active: isActive('/account')}">My Account</a></li>
     <li><a href="#" ng-click="logout()">Logout</a></li>

@@ -18,6 +18,7 @@ var userSchema = new mongoose.Schema({
   gender: String,
   location: String,
   website: String,
+  userlistUpdated: Date,
   picture: String,
   facebook: String,
   twitter: String,

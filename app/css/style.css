@@ -1,8 +1,8 @@
 body {
     text-align: center;
     font-family: 'Open Sans', sans-serif;
-		margin: 0;
-		padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .left {
@@ -70,7 +70,7 @@ tbody a:hover {
 
 .router {
     position: relative;
-		margin-bottom: 75px;
+    margin-bottom: 75px;
 }
 
 .itus span {
@@ -95,6 +95,15 @@ tbody a:hover {
 .table {
     border-spacing: 1px;
     margin: auto;
+}
+
+.table td {
+    padding: 5px;
+}
+
+.table td input {
+    display: block;
+    width: 100%;
 }
 
 .table>thead {
@@ -131,32 +140,44 @@ tbody a:hover {
     margin: 0 2px;
 }
 
-.rds{
-	font-family: monospace;
-	font-weight: bold;
+.rds {
+    font-family: monospace;
+    font-weight: bold;
 }
 
-ng-map {
-		max-width: 960px;
-		display: inline-block;
+.table input {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 14px;
+    border-bottom: 1px solid white;
+}
+
+.table input::-webkit-input-placeholder {
+    color: white;
+    opacity: 1;
+}
+
+ng-map, #transmap {
+    max-width: 960px;
     height: 480px;
     margin: 10px auto;
 }
 
-form.addlog{
-	text-align: left;
+form.addlog {
+    text-align: left;
 }
 
 .addlog input, .addlog select {
-	font-size: 14px;
-	margin: 5px;
-	padding: 1px;
-	border: 1px solid #4e4e4e;
-	border-radius: 2px;
+    font-size: 14px;
+    margin: 5px;
+    padding: 1px;
+    border: 1px solid #4e4e4e;
+    border-radius: 2px;
 }
 
-.addlog input{
-	padding: 2px;
+.addlog input {
+    padding: 2px;
 }
 
 .addlog input[type=date] {
@@ -171,8 +192,8 @@ form.addlog{
     width: 15em;
 }
 
-.chart{
-	padding: 10px;
+.chart {
+    padding: 10px;
 }
 
 .chart>div {

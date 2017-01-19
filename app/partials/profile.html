@@ -6,6 +6,10 @@
     <div ng-repeat="success in messages.success">{{success.msg}}</div>
   </div>
 
+  <h4>Userlist data</h4>
+  <div>Userlist updated at: {{profile.userlistUpdated | date:'medium'}}</div>
+  <button ngf-select="upload(csvfile)" ng-model="csvfile" name="csvfile" accept="text/*">Upload new userlist file</button>
+
   <h4>Profile Information</h4>
 
   <form ng-submit="updateProfile()">
