@@ -256,8 +256,6 @@ exports.userlistQuery = function (req, res, next) {
 };
 
 exports.userlistUpload = function(req, res, next) {
-    console.log(req);
-
     function parseCSVFile(sourceFilePath, columns, onNewRecord, handleError, done) {
         var source = fs.createReadStream(sourceFilePath);
 
@@ -266,10 +264,15 @@ exports.userlistUpload = function(req, res, next) {
         var parser = parse({
             delimiter: '\t',
             columns: columns,
-            auto_parse: true
+            auto_parse: true,
+            relax_column_count: true
         });
 
         parser.on("data", function(ul) {
+            // Skip last line
+            if (ul.freq == "108999        0000-0001       XXX fmscan.org list end      XXX XXX\n"){
+              return "done";
+            }
             var garbage = ["unk1", "unk2", "unk3", "unk4", "unk5"]; // Unnecesary data array
             for (let i = 0; i < garbage.length; i++) {
               delete ul[garbage[i]];
