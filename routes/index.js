@@ -21,41 +21,6 @@ exports.getLogs = function(req, res, next) {
     });
 };
 
-exports.getAutocomplete = function(req, res, next) {
-    Log.aggregate([
-      {
-        $lookup: {
-          from: 'locats',
-          localField: 'location',
-          foreignField: '_id',
-          as: 'locat'
-        }},
-        {$unwind: '$locat'},
-        {
-        $group:
-        {
-          _id: null,
-          stations: {
-            $addToSet: {name: '$station'}
-          },
-          transmitters: {
-            $addToSet: {site: '$locat.site', long: '$locat.long', lat: '$locat.lat', itu: '$locat.itu', country: '$locat.country', qrb: '$locat.qrb'}
-          },
-          countries: {
-            $addToSet: '$locat.country'
-          }
-        }
-      }
-    ]).exec(function(err, log) {
-        if (err) {
-            return next(err);
-        }
-
-        res.send(log);
-    });
-
-}
-
 exports.freqStats = function (req, res, nxt) {
   Log.aggregate([
       {$unwind: '$stations'},

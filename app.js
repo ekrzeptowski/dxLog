@@ -90,7 +90,6 @@ var userlistStorage = multer.diskStorage({
 var upload = multer({ storage: audioStorage });
 
 app.get('/api/logs', routes.getLogs);
-app.get('/api/autocomplete', routes.getAutocomplete);
 app.get('/api/stats/freq', routes.freqStats);
 app.get('/api/stats/itu', routes.ituStats);
 app.post('/api/logs', userController.ensureAuthenticated, routes.addLog);

@@ -223,7 +223,7 @@ app.filter('round', function () {
 	};
 });
 
-app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams, $auth, $resource, StationsService, ColorService, $sce, NgMap, ngDialog) {
+app.controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams, $auth, $resource, StationsService, ColorService, $sce, NgMap, ngDialog, filterFilter) {
     // default sorting settings
     $scope.col = 'freq';
     $scope.reverse = false;
@@ -506,8 +506,6 @@ app.controller("LogForm", function($scope, StationsService, Upload, $timeout) {
     $scope.formData = {};
 
     $scope.messages = StationsService.messages;
-    $scope.stations = [];
-    $scope.sites = [];
 
     if ($scope.ngDialogData) {
         $scope.formData = $scope.ngDialogData.entry;
@@ -530,33 +528,7 @@ app.controller("LogForm", function($scope, StationsService, Upload, $timeout) {
       $scope.formData.stations.firstLog = new Date();
     }
 
-
-    // autocomplete click action
-    $scope.selectedStation = function(selected) {
-        $scope.formData.stations.station = selected.title || selected.originalObject;
-    };
-
-    // autocomplete click action
-    $scope.selectedTransmitter = function(selected) {
-        var fD = $scope.formData;
-        var oO = selected.originalObject;
-        fD.transmitter = selected.title || oO;
-        if (selected.title) {
-            fD.itu = oO.itu;
-            fD.lon = oO.lon;
-            fD.lat = oO.lat;
-            fD.qrb = oO.qrb;
-        }
-    };
-    // fetch autocomplete data from Api and push it to vars
-    $scope.autocomplet = StationsService.query('autocomplete');
-    $scope.autocomplet.$promise.then(function() {
-        $scope.stations = $scope.autocomplet[0].stations;
-        $scope.sites = $scope.autocomplet[0].transmitters;
-    });
-
     // audio upload
-
     $scope.upload = function(file) {
         file.upload = Upload.upload({
             url: 'api/upload',
@@ -593,8 +565,4 @@ app.controller("LogForm", function($scope, StationsService, Upload, $timeout) {
         delete StationsService.messages.error;
     };
 
-    // CSVUserList parse function
-    $scope.parseCSV = function() {
-
-    };
 });
