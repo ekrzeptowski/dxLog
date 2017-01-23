@@ -18,6 +18,7 @@ gulp.task('angular', function() {
     return gulp.src([
             'app/app.js',
             'app/controllers/*.js',
+            'app/filters/*.js',
             'app/services/*.js'
         ])
         .pipe(sourcemaps.init())
