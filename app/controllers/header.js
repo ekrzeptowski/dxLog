@@ -1,20 +1,18 @@
 angular.module('dxLog')
-    .controller('HeaderCtrl', function($scope, $location, $window, $auth, ngDialog) {
+    .controller('HeaderCtrl', function($scope, $location, $window, $auth, $mdDialog) {
         $scope.isActive = function(viewLocation) {
             return viewLocation === $location.path();
         };
 
-        $scope.isAuthenticated = function() {
-            return $auth.isAuthenticated();
+        var originatorEv;
+
+        this.openMenu = function($mdOpenMenu, ev) {
+            originatorEv = ev;
+            $mdOpenMenu(ev);
         };
 
-        $scope.addLog = function() {
-            ngDialog.open({
-                template: 'partials/logform.html',
-                controller: 'LogForm',
-                closeByNavigation: true,
-                className: 'ngdialog-theme-plain'
-            });
+        $scope.isAuthenticated = function() {
+            return $auth.isAuthenticated();
         };
 
         $scope.logout = function() {

@@ -1,5 +1,5 @@
-<header ng-if="state.current.name == 'index'">
-    <div class="itus">
+<header ng-if="state.current.name == 'index'" layout="column" layout-align="start center">
+    <div class="itus" layout="row" layout-wrap>
         <span ng-repeat="itu in itus">
             <a href="/country/{{itu._id}}">
                 <i class="flag {{itu._id | lowercase}}"></i>
@@ -18,7 +18,7 @@
     </p>
 </header>
 
-<h2 ng-if="state.current.name != 'index'">
+<h2 class="center" ng-if="state.current.name != 'index'">
     <i ng-if="state.current.name == 'country'" class="flag {{itu | lowercase}}"></i>
     {{title}}
 </h2>
@@ -29,6 +29,8 @@
 		<marker position="{{rx}}" title="RX" icon="{url:'rx.png', anchor: [16,28]}"></marker>
 </ng-map>
 
+<md-progress-circular ng-if="!stations" md-mode="indeterminate"></md-progress-circular>
+
 <table class="table">
     <thead>
         <tr>
@@ -36,9 +38,9 @@
             <td ng-class="{up: col == 'freq', down: col == 'freq' && reverse}" ng-click="order('freq')">Freq</td>
             <td ng-class="{up: col == 'station', down: col == 'station' && reverse}" ng-click="order('station')">Station</td>
             <td ng-if="state.current.name != 'transmitter'" ng-class="{up: col[0] == 'location.itu', down: col[0] == 'location.itu' && reverse}" ng-click="order(['location.itu', 'location.site'])">ITU / Location</td>
-            <td ng-class="{up: col == 'ps', down: col == 'ps' && reverse}" ng-click="order('ps')">PS</td>
-            <td ng-class="{up: col == 'pi', down: col == 'pi' && reverse}" ng-click="order('pi')">PI</td>
-            <td ng-class="{up: col == 'pmax', down: col == 'pmax' && reverse}" ng-click="order('pmax')">Pmax</td>
+            <td hide-xs ng-class="{up: col == 'ps', down: col == 'ps' && reverse}" ng-click="order('ps')">PS</td>
+            <td hide-xs ng-class="{up: col == 'pi', down: col == 'pi' && reverse}" ng-click="order('pi')">PI</td>
+            <td hide-xs ng-class="{up: col == 'pmax', down: col == 'pmax' && reverse}" ng-click="order('pmax')">Pmax</td>
             <td ng-if="state.current.name != 'transmitter'" ng-class="{up: col == 'location.qrb', down: col == 'location.qrb' && reverse}" ng-click="order('location.qrb')">QRB</td>
             <td ng-class="{up: col == 'firstLog', down: col == 'firstLog' && reverse}" ng-click="order('firstLog')">1st Log</td>
             <td ng-class="{up: col == 'mode', down: col == 'mode' && reverse}" ng-click="order('mode')">Mode</td>
@@ -46,7 +48,7 @@
         </tr>
     </thead>
     <tr ng-repeat="item in stations | orderBy:col:reverse" ng-class="color(col, freqs, item.freq) ? 'even' : 'odd'">
-        <td ng-if="isAuthenticated()"><a ng-click="editLog(item)">Edit</a></td>
+        <td ng-if="isAuthenticated()"><md-icon class="material-icons" ng-click="editLog(item)" aria-label="Edit">edit</md-icon></td>
         <td>{{item.freq | number : 1}}{{item.pol}}</td>
         <td class="left">
             <a ng-href="station/{{item.station}}">{{item.station}}</a>
@@ -55,21 +57,14 @@
             <span ng-class="{'bold': (item.itu != 'POL')}">{{item.itu}}</span>
             <a ng-href="transmitter/{{item._id}}">{{item.transmitter}}</a>
         </td>
-        <td class="rds">{{item.ps}}</td>
-        <td class="rds">{{item.pi}}</td>
-        <td class="right">{{item.pmax | number : 2}}</td>
+        <td hide-xs class="rds">{{item.ps}}</td>
+        <td hide-xs class="rds">{{item.pi}}</td>
+        <td hide-xs class="right">{{item.pmax | number : 2}}</td>
         <td ng-if="state.current.name != 'transmitter'" class="right" ng-class="{'bold': item.qrb > 600}">{{item.qrb}}</td>
         <td>{{item.firstLog | date:'yyyy-MM-dd'}}</td>
         <td>{{item.mode}}</td>
-        <td><img ng-if="item.comment" src="info.png" title="{{item.comment}}">
-            <a href="#" ng-if="item.audio" ng-click="playAudio(item.audio)"><img src="audio.png"></a>
+        <td flex layout="row" layout-align="center center"><span ng-if="item.comment"><md-tooltip style="color:white; font-size:18px;">{{item.comment}}</md-tooltip><i class="material-icons">info_outline</i></span>
+            <a href="#" ng-if="item.audio" ng-click="playAudio(item.audio)"><i class="material-icons">play_circle_outline</i></a>
         </td>
     </tr>
 </table>
-
-<p ng-if="state.current.name != 'index'"><a href="/">return</a></p>
-
-<div class="player" ng-show="audio">
-    <div>{{audio}}</div>
-    <audio ng-src="{{audioUrl}}" controls autoplay></audio>
-</div>

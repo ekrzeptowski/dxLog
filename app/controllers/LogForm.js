@@ -1,4 +1,4 @@
-angular.module('dxLog').controller("LogForm", function($scope, StationsService, Upload, $timeout) {
+angular.module('dxLog').controller("LogForm", function($scope, StationsService, Upload, $timeout, dialogData, $mdDialog) {
     // clear formData
     delete StationsService.messages.success;
     delete StationsService.messages.error;
@@ -8,11 +8,16 @@ angular.module('dxLog').controller("LogForm", function($scope, StationsService, 
 
     $scope.messages = StationsService.messages;
 
-    if ($scope.ngDialogData) {
-        $scope.formData = $scope.ngDialogData.entry;
-        if ($scope.ngDialogData.editMode) {
-            $scope.formData.stations.firstLog = new Date($scope.formData.firstLog);
-            delete $scope.formData.firstLog;
+    if (dialogData) {
+        $scope.formData = angular.copy(dialogData.entry);
+        if (dialogData.editMode) {
+            $scope.editMode = true;
+            if ($scope.formData.firstLog) {
+                $scope.formData.stations = {};
+                $scope.formData.stations.firstLog = new Date($scope.formData.firstLog);
+                delete $scope.formData.firstLog;
+            }
+
             $scope.formData.stations._id = $scope.formData.stationId;
             delete $scope.formData.stationId;
             ["freq", "mode", "pmax", "pol", "station", "pi", "ps", "comment", "audio"].forEach(a => {
@@ -57,7 +62,7 @@ angular.module('dxLog').controller("LogForm", function($scope, StationsService, 
             $scope.upload(this.file);
             $scope.formData.stations.audio = this.file.name;
         }
-        if ($scope.ngDialogData.editMode) {
+        if (this.editMode) {
             StationsService.put($scope.formData);
         } else {
             StationsService.post($scope.formData);
@@ -66,4 +71,7 @@ angular.module('dxLog').controller("LogForm", function($scope, StationsService, 
         delete StationsService.messages.error;
     };
 
+    $scope.cancel = function() {
+      $mdDialog.cancel();
+    };
 });

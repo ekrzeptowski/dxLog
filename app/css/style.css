@@ -1,5 +1,4 @@
 body {
-    text-align: center;
     font-family: 'Open Sans', sans-serif;
     margin: 0;
     padding: 0;
@@ -15,6 +14,15 @@ body {
 
 .right {
     text-align: right;
+}
+
+.fixed {
+    position: fixed;
+    width: 100%;
+}
+
+.bottom {
+    bottom: 0;
 }
 
 a {
@@ -33,6 +41,7 @@ header a:hover {
 
 ul {
     list-style: none;
+    margin: 0;
     padding: 0;
 }
 
@@ -45,19 +54,18 @@ h1 a {
     color: black;
 }
 
-h2 {
-    font-size: larger;
-    color: #3b3b3b;
-}
-
 .up:after {
-    content: "▲";
-    font-size: 12px;
+    font-family: "Material Icons";
+    content: "keyboard_arrow_up";
+    vertical-align: inherit;
+    font-size: 18px;
 }
 
 .down:after {
-    content: "▼";
-    font-size: 12px;
+    font-family: "Material Icons";
+    content: "keyboard_arrow_down";
+    vertical-align: inherit;
+    font-size: 18px;
 }
 
 tbody a {
@@ -71,6 +79,10 @@ tbody a:hover {
 .router {
     position: relative;
     margin-bottom: 75px;
+}
+
+.itus {
+  margin: 20px;
 }
 
 .itus span {
@@ -98,7 +110,7 @@ tbody a:hover {
 }
 
 .table td {
-    padding: 5px;
+    padding: 3px;
 }
 
 .table td input {
@@ -149,7 +161,7 @@ tbody a:hover {
     background: none;
     border: none;
     color: white;
-    font-size: 14px;
+    font-size: 16px;
     border-bottom: 1px solid white;
 }
 
@@ -162,26 +174,6 @@ ng-map, #transmap {
     max-width: 960px;
     height: 480px;
     margin: 10px auto;
-}
-
-form.addlog {
-    text-align: left;
-}
-
-.addlog input, .addlog select {
-    font-size: 14px;
-    margin: 5px;
-    padding: 1px;
-    border: 1px solid #4e4e4e;
-    border-radius: 2px;
-}
-
-.addlog input {
-    padding: 2px;
-}
-
-.addlog input[type=date] {
-    padding: 0;
 }
 
 #station, #transmitter {
@@ -204,27 +196,6 @@ form.addlog {
     padding-right: 5px;
 }
 
-.angucomplete-holder {
-    position: relative;
-}
-
-.angucomplete-dropdown {
-    position: absolute;
-    background: white;
-    width: 100%;
-    border: solid 1px black;
-    border-top: none;
-    z-index: 2;
-}
-
-.angucomplete-row {
-    border-bottom: 1px solid black;
-}
-
-.angucomplete-row :hover {
-    background: #1c66c8;
-}
-
 .player {
     position: fixed;
     bottom: 0;
@@ -236,4 +207,23 @@ form.addlog {
     -webkit-box-shadow: 0px -1px 20px 0px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: 0px -1px 20px 0px rgba(0, 0, 0, 0.75);
     box-shadow: 0px -1px 20px 0px rgba(0, 0, 0, 0.75);
+}
+
+main {
+    padding-bottom: 64px;
+}
+
+md-input-container .md-errors-spacer {
+    min-height: 0;
+}
+
+.hint {
+    position: absolute;
+    left: 5px;
+    right: auto;
+    bottom: -14px;
+    font-size: 14px;
+    line-height: 14px;
+    transition: all 0.3s cubic-bezier(0.55, 0, 0.55, 0.2);
+    color: grey;
 }

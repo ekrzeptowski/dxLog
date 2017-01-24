@@ -1,4 +1,4 @@
-angular.module('dxLog').controller("UserlistBrowser", function($scope, StationsService, ngDialog, NgMap, filterFilter) {
+angular.module('dxLog').controller("UserlistBrowser", function($scope, StationsService, $mdDialog, NgMap, filterFilter, PagingService) {
     $scope.itus = StationsService.query("userlist/itus");
 
     $scope.distance = function(lat1, lon1, lat2, lon2) {
@@ -15,11 +15,15 @@ angular.module('dxLog').controller("UserlistBrowser", function($scope, StationsS
 
         return 12742 * Math.asin(Math.sqrt(a)); // Diameter of the earth in km (2 * 6371)
     };
-
-    $scope.currentPage = 0;
+    $scope.paging = PagingService;
+    $scope.currentPage = $scope.paging.currentPage;
     $scope.pageSize = 50;
     $scope.setCurrentPage = function(currentPage) {
         $scope.currentPage = currentPage;
+    };
+
+    function loadPages() {
+        $scope.currentPage = $scope.paging.current;
     }
 
     $scope.getNumberAsArray = function(num) {
@@ -82,7 +86,14 @@ angular.module('dxLog').controller("UserlistBrowser", function($scope, StationsS
             markers[i].setMap(null);
         }
         markers.length = 0;
+        google.maps.event.trigger(map, 'resize');
     }
+
+    $scope.$watch(function() {
+        return PagingService.paging.current;
+    }, function(newValue, oldValue) {
+        $scope.currentPage = newValue;
+    });
 
     // show the map and place some markers
 
@@ -111,6 +122,8 @@ angular.module('dxLog').controller("UserlistBrowser", function($scope, StationsS
             $scope.numberOfPages = function() {
                 return Math.ceil(this.filterList.length / $scope.pageSize);
             };
+            PagingService.paging.current = 1;
+            PagingService.paging.pages = $scope.numberOfPages();
         });
     };
 
@@ -119,33 +132,40 @@ angular.module('dxLog').controller("UserlistBrowser", function($scope, StationsS
             freq: this.search.freq || '!!',
             station: this.search.station
         });
-        $scope.currentPage = 0;
+        PagingService.paging.current = 1;
         $scope.numberOfPages = function() {
             return Math.ceil(this.filterList.length / $scope.pageSize);
         };
+        PagingService.paging.pages = $scope.numberOfPages();
     };
     $scope.addLog = function(entry) {
-        ngDialog.open({
-            template: 'partials/logform.html',
+        $mdDialog.show({
             controller: 'LogForm',
-            closeByNavigation: true,
-            className: 'ngdialog-theme-plain',
-            data: {
-                editMode: false,
-                entry: {
-                    transmitter: entry.transmitter,
-                    itu: entry.ITU,
-                    lat: entry.lat,
-                    lon: entry.lon,
-                    qrb: entry.qrb,
-                    stations: {
-                        station: entry.station,
-                        freq: entry.freq,
-                        pol: entry.pol,
-                        pmax: entry.pmax
+            templateUrl: 'partials/logform.html',
+            clickOutsideToClose: true,
+            fullscreen: true,
+            locals: {
+                dialogData: {
+                    editMode: false,
+                    entry: {
+                        transmitter: entry.transmitter,
+                        itu: entry.ITU,
+                        lat: entry.lat,
+                        lon: entry.lon,
+                        qrb: entry.qrb,
+                        stations: {
+                            station: entry.station,
+                            freq: entry.freq,
+                            pol: entry.pol,
+                            pmax: entry.pmax
+                        }
                     }
                 }
             }
         });
     };
+
+    $scope.$on('$destroy', function() {
+        PagingService.reset();
+    });
 });

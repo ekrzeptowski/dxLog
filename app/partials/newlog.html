@@ -1,10 +1,20 @@
-<span>Select country: </span>
-<select ng-options="a._id for a in itus" ng-model="selectedItu" ng-change="userlistGet(selectedItu._id)">
-</select>
+<div layout="row" layout-align="center center">
+    <span>Select country: </span>
+    <md-input-container>
+        <md-select ng-model="selectedItu" ng-change="userlistGet(selectedItu)">
+            <md-option ng-repeat="a in itus" ng-value="a._id">
+                {{a._id}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+    <span> or <md-button class="md-primary" ng-click="addLog({})">add log manually</md-button></span>
+</div>
 
-<div ng-if="selectedItu" id="transmap">
+<div ng-show="selectedItu" id="transmap">
 
 </div>
+
+
 
 <!-- <ng-map ng-if="countrylist" zoom="5" zoom-to-include-markers="auto" disable-default-u-i="true" disable-double-click-zoom="true" map-type-id="TERRAIN" default-style="false" scrollwheel="false" center="{{rx}}">
     <marker ng-repeat="a in countrylist" no-watcher="true" position="{{a.lon}}, {{a.lat}}" title="{{a.transmitter}}" icon="{url:'tx.png', anchor: [16,28]}"></marker>
@@ -20,8 +30,12 @@
         <td>Pmax</td>
         <td>QRB</td>
     </thead>
-    <tr class="even" ng-repeat="item in filterList | orderBy:'freq' | startFrom: currentPage * pageSize  | limitTo:pageSize track by item.fmscanId">
-        <td><a ng-click="addLog(item)"><img src="plus.svg"></a></td>
+    <tr class="even" ng-repeat="item in filterList | orderBy:'freq' | startFrom: (currentPage - 1) * pageSize  | limitTo:pageSize track by item.fmscanId">
+        <td>
+            <a ng-click="addLog(item)">
+                <md-icon class="material-icons" aria-label="Add log">add</md-icon>
+            </a>
+        </td>
         <td ng-if="item.freq >= 87.5">{{::item.freq | number : 1}}{{::item.pol}}</td>
         <td ng-if="item.freq < 87.5">{{::item.freq | number : 2}}{{::item.pol}}</td>
         <td class="left">
@@ -36,4 +50,3 @@
         <td class="right">{{::item.qrb}}</td>
     </tr>
 </table>
-<button ng-if="lista" ng-repeat="i in getNumberAsArray(numberOfPages()) track by $index" ng-click="setCurrentPage($index)">{{$index + 1}}</button>

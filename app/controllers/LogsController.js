@@ -1,4 +1,4 @@
-angular.module('dxLog').controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams, $auth, $resource, StationsService, ColorService, $sce, NgMap, ngDialog, filterFilter) {
+angular.module('dxLog').controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams, $auth, $resource, StationsService, ColorService, $sce, NgMap, filterFilter, $mdDialog, AudioService) {
     // default sorting settings
     $scope.col = 'freq';
     $scope.reverse = false;
@@ -19,14 +19,16 @@ angular.module('dxLog').controller("MainCtrl", function($scope, $http, $filter, 
     };
 
     $scope.editLog = function(entry) {
-        ngDialog.open({
-            template: 'partials/logform.html',
+        $mdDialog.show({
+            templateUrl: 'partials/logform.html',
             controller: 'LogForm',
-            closeByNavigation: true,
-            className: 'ngdialog-theme-plain',
-            data: {
-                editMode: true,
-                entry
+            clickOutsideToClose: true,
+            fullscreen: true,
+            locals: {
+              dialogData: {
+                  editMode: true,
+                  entry
+              }
             }
         });
     };
@@ -108,7 +110,10 @@ angular.module('dxLog').controller("MainCtrl", function($scope, $http, $filter, 
     };
 
     $scope.playAudio = function(file) {
-        $scope.audio = file;
-        $scope.audioUrl = $sce.trustAsResourceUrl("audio/" + file);
+        return AudioService.play(file);
     };
+
+    $scope.$on('$destroy', function() {
+        AudioService.reset();
+    });
 });

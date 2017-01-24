@@ -1,38 +1,51 @@
+<md-content class="md-no-momentum">
+    <div layout="column" layout-align="center center">
+        <div ng-if="messages.error" role="alert" class="text-danger">
+            <div ng-repeat="error in messages.error">{{error.msg}}</div>
+        </div>
+        <div ng-if="messages.success" role="alert" class="text-success">
+            <div ng-repeat="success in messages.success">{{success.msg}}</div>
+        </div>
+
+        <h4>Profile Information</h4>
+
+        <form ng-submit="updateProfile()">
+            <md-input-container class="md-icon-float md-block">
+                <label>E-mail</label>
+                <md-icon class="material-icons">mail</md-icon>
+                <input ng-model="profile.email" type="text">
+            </md-input-container>
+            <md-input-container class="md-icon-float md-block">
+                <label>Name</label>
+                <md-icon class="material-icons">person</md-icon>
+                <input ng-model="profile.name" type="text">
+            </md-input-container>
+        </form>
+
+        <h4>Userlist data</h4>
+        <div>Userlist updated at: <b>{{profile.userlistUpdated | date:'medium'}}</b></div>
+        <md-button class="md-primary" ngf-select="upload(csvfile)" ng-model="csvfile" name="csvfile" accept="text/*">Upload new userlist file</md-button>
+
+        <h4>Change Password</h4>
+
+        <form ng-submit="changePassword()">
+            <md-input-container class="md-icon-float md-block">
+                <label>New Password</label>
+                <md-icon class="material-icons">lock</md-icon>
+                <input type="password" ng-model="profile.password">
+            </md-input-container>
+            <md-input-container class="md-icon-float md-block">
+                <label>Confirm Password</label>
+                <md-icon class="material-icons">lock</md-icon>
+                <input type="password" ng-model="profile.confirm">
+            </md-input-container>
+            <md-button type="submit" class="md-primary">Change Password</md-button>
+        </form>
+    </div>
+</md-content>
 <div class="container">
-  <div ng-if="messages.error" role="alert" class="text-danger">
-    <div ng-repeat="error in messages.error">{{error.msg}}</div>
-  </div>
-  <div ng-if="messages.success" role="alert" class="text-success">
-    <div ng-repeat="success in messages.success">{{success.msg}}</div>
-  </div>
 
-  <h4>Userlist data</h4>
-  <div>Userlist updated at: {{profile.userlistUpdated | date:'medium'}}</div>
-  <button ngf-select="upload(csvfile)" ng-model="csvfile" name="csvfile" accept="text/*">Upload new userlist file</button>
 
-  <h4>Profile Information</h4>
 
-  <form ng-submit="updateProfile()">
-    <label for="email">Email</label>
-    <input type="email" name="email" id="email" ng-model="profile.email">
-    <label for="name">Name</label>
-    <input type="text" name="name" id="name" ng-model="profile.name">
-
-    <br>
-    <button type="submit">Update Profile</button>
-  </form>
-
-  <h4>Change Password</h4>
-
-  <form ng-submit="changePassword()">
-    <label for="password">New Password</label>
-    <input type="password" name="password" id="password" ng-model="profile.password">
-    <label for="confirm">Confirm Password</label>
-    <input type="password" name="confirm" id="confirm" ng-model="profile.confirm">
-    <br>
-    <button type="submit">Change Password</button>
-  </form>
 
 </div>
-
-<p><a href="/">return</a></p>

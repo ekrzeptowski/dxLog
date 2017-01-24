@@ -1,8 +1,33 @@
-<div ng-controller="HeaderCtrl" class="container">
-  <ul ng-if="isAuthenticated()" class="list-inline">
-    <li><a href="/newlog" ng-class="{ active: isActive('/newlog')}">New log</a></li>
-    <li><a href="#" ng-click="addLog()" ng-class="{ active: isActive('/addlog')}">Add items</a></li>
-    <li><a href="/account" ng-class="{ active: isActive('/account')}">My Account</a></li>
-    <li><a href="#" ng-click="logout()">Logout</a></li>
-  </ul>
+<div ng-controller="HeaderCtrl" class="md-toolbar-tools">
+    <md-button href="/" ng-if="!isActive('/')" class="md-icon-button" aria-label="Favorite">
+        <md-icon class="material-icons" aria-label="Edit">arrow_back</md-icon>
+    </md-button>
+    <h2>FM DX Tropo Log</h2>
+    <span flex></span>
+    <md-button ng-if="isAuthenticated()" href="/newlog" class="md-icon-button" aria-label="New log">
+        <md-tooltip>
+            New log
+        </md-tooltip>
+        <md-icon class="material-icons">add</md-icon>
+    </md-button>
+    <md-menu ng-if="isAuthenticated()" md-position-mode="target-right target">
+        <md-button ng-click="$mdMenu.open($event)" class="md-icon-button" aria-label="New log">
+            <md-icon class="material-icons">account_circle</md-icon>
+        </md-button>
+        <md-menu-content>
+            <md-menu-item>
+                <md-button ui-sref="account">
+                    <md-icon class="material-icons">account_circle</md-icon>
+                    <span>My account</span>
+                </md-button>
+            </md-menu-item>
+            <md-menu-item>
+                <md-button ng-click="logout()">
+                    <md-icon class="material-icons">exit_to_app</md-icon>
+                    <!-- <md-icon md-svg-icon="social:notifications-{{ctrl.notificationsEnabled ? 'off' : 'on'}}"></md-icon> -->
+                    <span>Logout</span>
+                </md-button>
+            </md-menu-item>
+        </md-menu-content>
+    </md-menu>
 </div>

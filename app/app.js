@@ -1,6 +1,6 @@
-var app = angular.module('dxLog', ['ngResource', 'ui.router', 'satellizer', 'ngFileUpload', 'ngMap', 'ngDialog']);
+var app = angular.module('dxLog', ['ngResource', 'ui.router', 'satellizer', 'ngFileUpload', 'ngMap', 'ngMaterial', 'cl.paging', 'material.components.expansionPanels']);
 
-app.config(function($stateProvider, $urlRouterProvider, $locationProvider, $authProvider) {
+app.config(function($stateProvider, $urlRouterProvider, $locationProvider, $authProvider, $mdAriaProvider) {
         $stateProvider
             .state('index', {
                 url: '/',
@@ -86,7 +86,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider, $auth
             return $location.path();
         });
 
-        $locationProvider.html5Mode(true);
+        $locationProvider.html5Mode(true).hashPrefix('');
 
         $authProvider.loginUrl = '/login';
         $authProvider.signupUrl = '/signup';
@@ -102,6 +102,8 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider, $auth
                 $location.path('/login');
             }
         }
+
+        $mdAriaProvider.disableWarnings();
 
 
     })
