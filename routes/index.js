@@ -144,7 +144,7 @@ exports.userlistUpload = function(req, res, next) {
             // Replace HTML charcodes to characters and clean strings
             ul.station = ul.station.replace(/&#(\d+);/g, function(match, match2) {
               return String.fromCharCode(+match2);
-            });
+            }).replace(/\//g, " - ");
             ul.transmitter = ul.transmitter.replace(/&#(\d+);/g, function(match, match2) {
               return String.fromCharCode(+match2);
             }).replace(/([/])/g, " - ").replace(/(\s*\(\d*\w*\))/g, "");
