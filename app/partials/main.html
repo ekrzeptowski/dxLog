@@ -62,7 +62,7 @@
         <td hide-xs class="rds">{{item.ps}}</td>
         <td hide-xs class="rds">{{item.pi}}</td>
         <td hide-xs class="right">{{item.pmax | number : 2}}</td>
-        <td ng-if="state.current.name != 'transmitter'" class="right" ng-class="{'bold': item.qrb > 600}">{{item.qrb}}</td>
+        <td ng-if="state.current.name != 'transmitter'" class="right" ng-class="{'bold': item.qrb > 700}">{{item.qrb}}</td>
         <td>{{item.firstLog | date:'yyyy-MM-dd'}}</td>
         <td>{{item.mode}}</td>
         <td flex layout="row" layout-align="center center"><span ng-if="item.comment"><md-tooltip style="color:white; font-size:18px;">{{item.comment}}</md-tooltip><i class="material-icons">info_outline</i></span>
@@ -78,7 +78,7 @@
             <div class="md-list-item-text" layout="column">
                 <h4><a ng-href="station/{{item.station}}">{{item.station}}</a></h4>
                 <p><span ng-class="{'bold': (item.itu != 'POL')}">{{item.itu}}</span> <a ng-href="transmitter/{{item._id}}">{{item.transmitter}}</a></p>
-                <p><span ng-if="item.ps" class="rds">{{item.ps}}, {{item.pi}}</span> {{item.pmax | number:2}}kW, <span ng-class="{'bold': item.qrb > 600}">{{item.qrb}}km</span><br>{{item.firstLog | date:'yyyy-MM-dd'}} {{item.mode}}</p>
+                <p><span ng-if="item.ps" class="rds">{{item.ps}}, {{item.pi}}</span> {{item.pmax | number:2}}kW, <span ng-class="{'bold': item.qrb > 700}">{{item.qrb}}km</span><br>{{item.firstLog | date:'yyyy-MM-dd'}} {{item.mode}}</p>
             </div>
         </md-list-item>
     </md-list>
