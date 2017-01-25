@@ -1,4 +1,4 @@
-angular.module('dxLog').controller("MainCtrl", function($scope, $http, $filter, $state, $stateParams, $auth, $resource, StationsService, ColorService, $sce, NgMap, filterFilter, $mdDialog, AudioService) {
+angular.module('dxLog').controller("MainCtrl", function($scope, $window, $http, $filter, $state, $stateParams, $auth, $resource, StationsService, ColorService, $sce, NgMap, filterFilter, $mdDialog, AudioService) {
     // default sorting settings
     $scope.col = 'freq';
     $scope.reverse = false;
@@ -18,6 +18,22 @@ angular.module('dxLog').controller("MainCtrl", function($scope, $http, $filter, 
         return $auth.isAuthenticated();
     };
 
+    // Watch for window width
+    var w = angular.element($window);
+    $scope.$watch(
+        function() {
+            return $window.innerWidth;
+        },
+        function(value) {
+            $scope.windowWidth = value;
+        },
+        true
+    );
+
+    w.bind('resize', function() {
+        $scope.$apply();
+    });
+
     $scope.editLog = function(entry) {
         $mdDialog.show({
             templateUrl: 'partials/logform.html',
@@ -25,10 +41,10 @@ angular.module('dxLog').controller("MainCtrl", function($scope, $http, $filter, 
             clickOutsideToClose: true,
             fullscreen: true,
             locals: {
-              dialogData: {
-                  editMode: true,
-                  entry
-              }
+                dialogData: {
+                    editMode: true,
+                    entry
+                }
             }
         });
     };

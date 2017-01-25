@@ -1,16 +1,17 @@
 angular.module('dxLog').controller("UserlistBrowser", function($scope, StationsService, $mdDialog, NgMap, filterFilter, PagingService) {
     $scope.itus = StationsService.query("userlist/itus");
+    $scope.rx = [49.34, 19.84];
 
-    $scope.distance = function(lat1, lon1, lat2, lon2) {
+    $scope.distance = function(first, second) {
         const deg2rad = 0.017453292519943295; // === Math.PI / 180
         var cos = Math.cos;
-        lat1 *= deg2rad;
-        lon1 *= deg2rad;
-        lat2 *= deg2rad;
-        lon2 *= deg2rad;
+        first[0] *= deg2rad;
+        first[1] *= deg2rad;
+        second[0] *= deg2rad;
+        second[1] *= deg2rad;
         var a = (
-            (1 - cos(lat2 - lat1)) +
-            (1 - cos(lon2 - lon1)) * cos(lat1) * cos(lat2)
+            (1 - cos(second[0] - first[0])) +
+            (1 - cos(second[1] - first[1])) * cos(first[0]) * cos(second[0])
         ) / 2;
 
         return 12742 * Math.asin(Math.sqrt(a)); // Diameter of the earth in km (2 * 6371)
@@ -103,7 +104,7 @@ angular.module('dxLog').controller("UserlistBrowser", function($scope, StationsS
             initMap();
             map_clear();
             $scope.lista = [];
-            $scope.countrylist.forEach(station => station.qrb = parseInt($scope.distance(49.34, 19.84, station.lat, station.lon).toFixed()));
+            $scope.countrylist.forEach(station => station.qrb = parseInt($scope.distance($scope.rx, [station.lat, station.lon]).toFixed()));
             for (var i = 0; i < $scope.countrylist.length; i++) {
                 var tooltip = "";
                 for (var j = 0; j < $scope.countrylist[i].stations.length; j++) {

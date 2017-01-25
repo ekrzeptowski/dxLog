@@ -1,16 +1,21 @@
-<div class="container">
-  <div ng-if="messages.error" role="alert" class="text-danger">
-    <div ng-repeat="error in messages.error">{{error.msg}}</div>
-  </div>
-  <div ng-if="messages.success" role="alert" class="text-success">
-    <div ng-repeat="success in messages.success">{{success.msg}}</div>
-  </div>
-  <form ng-submit="forgotPassword()">
-    <h4>Forgot Password</h4>
-    <p>Enter your email address below and we'll send you password reset instructions.</p>
-    <label for="email">Email</label>
-    <input type="email" name="email" id="email" placeholder="Email" ng-model="user.email" autofocus>
-    <br>
-    <button type="submit">Reset Password</button>
-  </form>
-</div>
+<md-content class="md-no-momentum">
+    <div layout="column" layout-align="center center">
+        <div ng-if="messages.error" role="alert" class="text-danger">
+            <div ng-repeat="error in messages.error">{{error.msg}}</div>
+        </div>
+        <div ng-if="messages.success" role="alert" class="text-success">
+            <div ng-repeat="success in messages.success">{{success.msg}}</div>
+        </div>
+        <form ng-submit="forgotPassword()">
+            <h4>Forgot Password</h4>
+            <p>Enter your email address below and we'll send you password reset instructions.</p>
+            <md-input-container class="md-icon-float md-block">
+              <label>Email</label>
+              <md-icon class="material-icons">mail</md-icon>
+              <input type="email" name="email" id="email" ng-model="user.email" autofocus>
+            </md-input-container>
+            <br>
+            <md-button class="md-raised md-primary" type="submit">Reset Password</md-button>
+        </form>
+    </div>
+</md-content>

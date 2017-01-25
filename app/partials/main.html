@@ -26,12 +26,12 @@
 <ng-map ng-if="state.current.name != 'index'" zoom="5" zoom-to-include-markers="auto" disable-default-u-i="true" disable-double-click-zoom="true" draggable="false" zoom-control="false" map-type-id="TERRAIN" default-style="false" scrollwheel="false" center="{{rx}}">
     <marker ng-repeat="transmitter in transmitters" position="{{transmitter.lat}}, {{transmitter.lon}}" title="{{transmitter.transmitter}}" icon="{url:'tx.png', anchor: [16,28]}" on-click="mapClick({{transmitter}})"></marker>
     <shape ng-repeat="transmitter in transmitters" name="polyline" path="[{{rx}}, {{[transmitter.lat, transmitter.lon]}}]" geodesic="true" stroke-color="#FF0000" stroke-opacity="0.33" stroke-weight="3"></shape>
-		<marker position="{{rx}}" title="RX" icon="{url:'rx.png', anchor: [16,28]}"></marker>
+    <marker position="{{rx}}" title="RX" icon="{url:'rx.png', anchor: [16,28]}"></marker>
 </ng-map>
 
 <md-progress-circular ng-if="!stations" md-mode="indeterminate"></md-progress-circular>
 
-<table class="table">
+<table ng-if="windowWidth >= 640" class="table">
     <thead>
         <tr>
             <td ng-if="isAuthenticated()"></td>
@@ -48,7 +48,9 @@
         </tr>
     </thead>
     <tr ng-repeat="item in stations | orderBy:col:reverse" ng-class="color(col, freqs, item.freq) ? 'even' : 'odd'">
-        <td ng-if="isAuthenticated()"><md-icon class="material-icons" ng-click="editLog(item)" aria-label="Edit">edit</md-icon></td>
+        <td ng-if="isAuthenticated()">
+            <md-icon class="material-icons" ng-click="editLog(item)" aria-label="Edit">edit</md-icon>
+        </td>
         <td>{{item.freq | number : 1}}{{item.pol}}</td>
         <td class="left">
             <a ng-href="station/{{item.station}}">{{item.station}}</a>
@@ -68,3 +70,16 @@
         </td>
     </tr>
 </table>
+
+<div ng-if="windowWidth < 640">
+    <md-list flex>
+        <md-list-item class="md-3-line list-line" ng-repeat="item in stations | orderBy:'freq'" layout="row" layout-align="center center">
+            <span style="align-self: center;">{{item.freq}}</span>
+            <div class="md-list-item-text" layout="column">
+                <h4><a ng-href="station/{{item.station}}">{{item.station}}</a></h4>
+                <p><span ng-class="{'bold': (item.itu != 'POL')}">{{item.itu}}</span> <a ng-href="transmitter/{{item._id}}">{{item.transmitter}}</a></p>
+                <p><span ng-if="item.ps" class="rds">{{item.ps}}, {{item.pi}}</span> {{item.pmax | number:2}}kW, <span ng-class="{'bold': item.qrb > 600}">{{item.qrb}}km</span><br>{{item.firstLog | date:'yyyy-MM-dd'}} {{item.mode}}</p>
+            </div>
+        </md-list-item>
+    </md-list>
+</div>
