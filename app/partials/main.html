@@ -37,11 +37,11 @@
             <td ng-if="isAuthenticated()"></td>
             <td ng-class="{up: col == 'freq', down: col == 'freq' && reverse}" ng-click="order('freq')">Freq</td>
             <td ng-class="{up: col == 'station', down: col == 'station' && reverse}" ng-click="order('station')">Station</td>
-            <td ng-if="state.current.name != 'transmitter'" ng-class="{up: col[0] == 'location.itu', down: col[0] == 'location.itu' && reverse}" ng-click="order(['location.itu', 'location.site'])">ITU / Location</td>
+            <td ng-if="state.current.name != 'transmitter'" ng-class="{up: col[0] == 'itu', down: col[0] == 'itu' && reverse}" ng-click="order(['itu', 'site'])">ITU / Location</td>
             <td hide-xs ng-class="{up: col == 'ps', down: col == 'ps' && reverse}" ng-click="order('ps')">PS</td>
             <td hide-xs ng-class="{up: col == 'pi', down: col == 'pi' && reverse}" ng-click="order('pi')">PI</td>
             <td hide-xs ng-class="{up: col == 'pmax', down: col == 'pmax' && reverse}" ng-click="order('pmax')">Pmax</td>
-            <td ng-if="state.current.name != 'transmitter'" ng-class="{up: col == 'location.qrb', down: col == 'location.qrb' && reverse}" ng-click="order('location.qrb')">QRB</td>
+            <td ng-if="state.current.name != 'transmitter'" ng-class="{up: col == 'qrb', down: col == 'qrb' && reverse}" ng-click="order('qrb')">QRB</td>
             <td ng-class="{up: col == 'firstLog', down: col == 'firstLog' && reverse}" ng-click="order('firstLog')">1st Log</td>
             <td ng-class="{up: col == 'mode', down: col == 'mode' && reverse}" ng-click="order('mode')">Mode</td>
             <td></td>
@@ -65,21 +65,40 @@
         <td ng-if="state.current.name != 'transmitter'" class="right" ng-class="{'bold': item.qrb > 700}">{{item.qrb}}</td>
         <td>{{item.firstLog | date:'yyyy-MM-dd'}}</td>
         <td>{{item.mode}}</td>
-        <td flex layout="row" layout-align="center center"><span ng-if="item.comment"><md-tooltip style="color:white; font-size:18px;">{{item.comment}}</md-tooltip><i class="material-icons">info_outline</i></span>
-            <a href="#" ng-if="item.audio" ng-click="playAudio(item.audio)"><i class="material-icons">play_circle_outline</i></a>
+        <td flex layout="row" layout-align="center center">
+            <span ng-if="item.comment">
+                <md-tooltip style="color:white; font-size:18px;">{{item.comment}}</md-tooltip>
+                <i class="material-icons">info_outline</i>
+            </span>
+            <a href="#" ng-if="item.audio" ng-click="playAudio(item.audio)">
+                <i class="material-icons">play_circle_outline</i>
+            </a>
         </td>
     </tr>
 </table>
 
 <div ng-if="windowWidth < 640">
-    <md-list flex>
-        <md-list-item class="md-3-line list-line" ng-repeat="item in stations | orderBy:'freq'" layout="row" layout-align="center center">
-            <span style="align-self: center;">{{item.freq}}</span>
-            <div class="md-list-item-text" layout="column">
-                <h4><a ng-href="station/{{item.station}}">{{item.station}}</a></h4>
-                <p><span ng-class="{'bold': (item.itu != 'POL')}">{{item.itu}}</span> <a ng-href="transmitter/{{item._id}}">{{item.transmitter}}</a></p>
-                <p><span ng-if="item.ps" class="rds">{{item.ps}}, {{item.pi}}</span> {{item.pmax | number:2}}kW, <span ng-class="{'bold': item.qrb > 700}">{{item.qrb}}km</span><br>{{item.firstLog | date:'yyyy-MM-dd'}} {{item.mode}}</p>
-            </div>
-        </md-list-item>
-    </md-list>
+    <md-card>
+        <md-list flex>
+            <md-list-item class="md-3-line" ng-repeat="item in stations | orderBy:'freq'">
+                <span class="md-avatar" style="align-self: center;">{{item.freq}}</span>
+                <div class="md-list-item-text">
+                    <h4>
+                        <a ng-href="station/{{item.station}}">{{item.station}}</a>
+                    </h4>
+                    <p>
+                        <span ng-class="{'bold': (item.itu != 'POL')}">{{item.itu}}</span>
+                        <a ng-href="transmitter/{{item._id}}">{{item.transmitter}}</a>
+                    </p>
+                    <p>
+                        <span ng-if="item.ps" class="rds">{{item.ps}},
+                            {{item.pi}}</span>
+                        {{item.pmax | number:2}}kW,
+                        <span ng-class="{'bold': item.qrb > 700}">{{item.qrb}}km</span><br>{{item.firstLog | date:'yyyy-MM-dd'}}
+                        {{item.mode}}</p>
+                </div>
+                <md-divider md-inset ng-if="!$last"></md-divider>
+            </md-list-item>
+        </md-list>
+    </md-card>
 </div>

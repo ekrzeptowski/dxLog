@@ -12,8 +12,8 @@ angular.module('dxLog').controller("LogForm", function($scope, StationsService, 
         $scope.formData = angular.copy(dialogData.entry);
         if (dialogData.editMode) {
             $scope.editMode = true;
+						$scope.formData.stations = {};
             if ($scope.formData.firstLog) {
-                $scope.formData.stations = {};
                 $scope.formData.stations.firstLog = new Date($scope.formData.firstLog);
                 delete $scope.formData.firstLog;
             }
