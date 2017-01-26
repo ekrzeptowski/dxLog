@@ -14,18 +14,12 @@
 
 </div>
 
-
-
-<!-- <ng-map ng-if="countrylist" zoom="5" zoom-to-include-markers="auto" disable-default-u-i="true" disable-double-click-zoom="true" map-type-id="TERRAIN" default-style="false" scrollwheel="false" center="{{rx}}">
-    <marker ng-repeat="a in countrylist" no-watcher="true" position="{{a.lon}}, {{a.lat}}" title="{{a.transmitter}}" icon="{url:'tx.png', anchor: [16,28]}"></marker>
-</ng-map> -->
-
 <table ng-if="lista" class="table">
     <thead>
         <td></td>
         <td><input type="number" placeholder="Freq" style="width:4em;" ng-model="search.freq" ng-model-options="{ debounce: 250 }" ng-change="searchEvt()"></td>
         <td><input type="text" placeholder="Station" ng-model="search.station" ng-model-options="{ debounce: 250 }" ng-change="searchEvt()"></td>
-        <td>Transmitter</td>
+        <td><input type="text" placeholder="Transmitter" ng-model="search.transmitter" ng-model-options="{ debounce: 250 }" ng-change="searchEvt()"></td>
         <td>PI</td>
         <td>Pmax</td>
         <td>QRB</td>

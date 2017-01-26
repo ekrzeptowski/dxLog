@@ -131,7 +131,8 @@ angular.module('dxLog').controller("UserlistBrowser", function($scope, StationsS
     $scope.searchEvt = function() {
         $scope.filterList = filterFilter(this.lista, {
             freq: this.search.freq || '!!',
-            station: this.search.station
+            station: this.search.station,
+            transmitter: this.search.transmitter
         });
         PagingService.paging.current = 1;
         $scope.numberOfPages = function() {
