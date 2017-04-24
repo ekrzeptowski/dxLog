@@ -45,3 +45,4 @@ jspm_packages
 
 .env
 .DS_Store
+dist

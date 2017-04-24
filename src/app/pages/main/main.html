@@ -1,0 +1,105 @@
+<main ng-if="main.stations.length !== 0">
+
+    <header ng-if="main.state.current.name == 'main'" layout="column" layout-align="start center">
+        <div class="itus" layout="row" layout-wrap>
+            <span ng-repeat="itu in main.itus">
+            <a href="/country/{{itu._id}}">
+                <i class="flag {{itu._id | lowercase}}"></i>
+                <b>{{itu._id}}</b>:
+                {{itu.count}}</a>
+        </span>
+        </div>
+
+        <p>
+            <b>Received stations:
+        </b>{{main.total}}
+        </p>
+
+        <p>
+            <a href="/freq-stats">Frequency statistics</a>
+        </p>
+    </header>
+
+    <h1 class="center" ng-if="main.state.current.name != 'main'">
+    	<i ng-if="main.state.current.name == 'country'" class="flag {{main.itu | lowercase}}"></i>
+    	{{main.title}}
+		</h1>
+
+		<transmitter-map ng-if="main.state.current.name != 'main'" rx="main.rx" transmitters="main.transmitters"></transmitter-map>
+    <table ng-if="main.windowWidth >= 640" class="table">
+        <thead>
+            <tr>
+                <td ng-if="main.isAuthenticated()"></td>
+                <td ng-class="{up: main.col == 'freq', down: main.col == 'freq' && main.reverse}" ng-click="main.order('freq')">Freq</td>
+                <td ng-class="{up: main.col == 'station', down: main.col == 'station' && main.reverse}" ng-click="main.order('station')">Station</td>
+                <td ng-if="state.current.name != 'transmitter'" ng-class="{up: main.col[0] == 'itu', down: main.col[0] == 'itu' && main.reverse}" ng-click="main.order(['itu', 'site'])">ITU / Location</td>
+                <td hide-xs ng-class="{up: main.col == 'ps', down: main.col == 'ps' && main.reverse}" ng-click="main.order('ps')">PS</td>
+                <td hide-xs ng-class="{up: main.col == 'pi', down: main.col == 'pi' && main.reverse}" ng-click="main.order('pi')">PI</td>
+                <td hide-xs ng-class="{up: main.col == 'pmax', down: main.col == 'pmax' && main.reverse}" ng-click="main.order('pmax')">Pmax</td>
+                <td ng-if="state.current.name != 'transmitter'" ng-class="{up: main.col == 'qrb', down: main.col == 'qrb' && main.reverse}" ng-click="main.order('qrb')">QRB</td>
+                <td ng-class="{up: main.col == 'firstLog', down: main.col == 'firstLog' && main.reverse}" ng-click="main.order('firstLog')">1st Log</td>
+                <td ng-class="{up: main.col == 'mode', down: main.col == 'mode' && main.main.reverse}" ng-click="main.order('mode')">Mode</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tr ng-repeat="item in main.stations | orderBy:main.col:main.main.reverse track by item.stationId" ng-class="main.color(main.col, main.freqs, item.freq) ? 'even' : 'odd'">
+            <td ng-if="::main.isAuthenticated()">
+                <md-icon class="material-icons" ng-click="main.editLog(item)" aria-label="Edit">edit</md-icon>
+            </td>
+            <td>{{::item.freq | number : 1}}{{::item.pol}}</td>
+            <td class="left">
+                <a ng-href="station/{{::item.station}}">{{::item.station}}</a>
+            </td>
+            <td ng-if="state.current.name != 'transmitter'" class="left">
+                <span ng-class="{'bold': (item.itu != 'POL')}">{{::item.itu}}</span>
+                <a ng-href="transmitter/{{item._id}}">{{::item.transmitter}}</a>
+            </td>
+            <td hide-xs class="rds">{{::item.ps}}</td>
+            <td hide-xs class="rds">{{::item.pi}}</td>
+            <td hide-xs class="right">{{::item.pmax | number : 2}}</td>
+            <td ng-if="state.current.name != 'transmitter'" class="right" ng-class="{'bold': item.qrb > 700}">{{::item.qrb}}</td>
+            <td>{{::item.firstLog | date:'yyyy-MM-dd'}}</td>
+            <td>{{::item.mode}}</td>
+            <td class="center column-other">
+                <span ng-if="::item.comment">
+                <md-tooltip style="color:white; font-size:18px;">{{::item.comment}}</md-tooltip>
+                <i class="material-icons">info_outline</i>
+            </span>
+                <a href="#" ng-if="::item.audio" ng-click="main.playAudio(item.audio)">
+                    <i class="material-icons">play_circle_outline</i>
+                </a>
+            </td>
+        </tr>
+    </table>
+
+    <div ng-if="main.windowWidth < 640">
+			<md-card>
+					<md-list flex>
+			<md-virtual-repeat-container class="mobile-stations">
+				<md-list-item class="md-3-line" md-virtual-repeat="item in main.stations | orderBy:'freq'">
+						<span class="md-avatar" style="align-self: center;">{{item.freq}}</span>
+						<div class="md-list-item-text">
+								<h4>
+								<a ng-href="station/{{item.station}}">{{item.station}}</a>
+						</h4>
+								<p>
+										<span ng-class="{'bold': (item.itu != 'POL')}">{{item.itu}}</span>
+										<a ng-href="transmitter/{{item._id}}">{{item.transmitter}}</a>
+								</p>
+								<p>
+										<span ng-if="item.ps" class="rds">{{item.ps}}{{item.pi ? ' | ' : ''}}
+										{{item.pi}}</span> {{item.pmax | number:2}}kW,
+										<span ng-class="{'bold': item.qrb > 700}">{{item.qrb}}km</span><br>{{item.firstLog | date:'yyyy-MM-dd'}} {{item.mode}}
+								</p>
+						</div>
+						<md-divider md-inset ng-if="!$last"></md-divider>
+				</md-list-item>
+			</md-virtual-repeat-container>
+
+
+            </md-list>
+        </md-card>
+    </div>
+</main>
+
+<md-progress-circular ng-if="main.stations.length === 0" md-mode="indeterminate"></md-progress-circular>

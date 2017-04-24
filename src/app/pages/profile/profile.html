@@ -1,0 +1,46 @@
+<md-content class="md-no-momentum">
+    <div layout="column" layout-align="center center">
+        <div ng-if="profileCtrl.messages.error" role="alert" class="text-danger">
+            <div ng-repeat="error in profileCtrl.messages.error">{{error.msg}}</div>
+        </div>
+        <div ng-if="profileCtrl.messages.success" role="alert" class="text-success">
+            <div ng-repeat="success in profileCtrl.messages.success">{{success.msg}}</div>
+        </div>
+
+        <h4>Profile Information</h4>
+
+        <form ng-submit="profileCtrl.updateProfile()">
+            <md-input-container class="md-icon-float md-block">
+                <label>E-mail</label>
+                <md-icon class="material-icons">mail</md-icon>
+                <input ng-model="profileCtrl.profile.email" type="text">
+            </md-input-container>
+            <md-input-container class="md-icon-float md-block">
+                <label>Name</label>
+                <md-icon class="material-icons">person</md-icon>
+                <input ng-model="profileCtrl.profile.name" type="text">
+            </md-input-container>
+            <md-button class="md-primary" type="submit">Update profile</md-button>
+        </form>
+
+        <h4>Userlist data</h4>
+        <div>Userlist updated at: <b>{{profileCtrl.profile.userlistUpdated | date:'medium'}}</b></div>
+        <md-button class="md-primary" ngf-select="profileCtrl.upload(profileCtrl.csvfile)" ng-model="profileCtrl.csvfile" name="csvfile" accept="text/*">Upload new userlist file</md-button>
+
+        <h4>Change Password</h4>
+
+        <form ng-submit="profileCtrl.changePassword()">
+            <md-input-container class="md-icon-float md-block">
+                <label>New Password</label>
+                <md-icon class="material-icons">lock</md-icon>
+                <input type="password" ng-model="profileCtrl.profile.password">
+            </md-input-container>
+            <md-input-container class="md-icon-float md-block">
+                <label>Confirm Password</label>
+                <md-icon class="material-icons">lock</md-icon>
+                <input type="password" ng-model="profileCtrl.profile.confirm">
+            </md-input-container>
+            <md-button type="submit" class="md-primary">Change Password</md-button>
+        </form>
+    </div>
+</md-content>

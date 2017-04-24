@@ -1,0 +1,76 @@
+<md-content class="md-no-momentum">
+    <div layout="column" layout-align="center center">
+        <div ng-if="auth.messages.error" role="alert" class="text-danger">
+            <div ng-repeat="error in auth.messages.error"><md-icon class="material-icons">error</md-icon> {{error.msg}}</div>
+        </div>
+        <div ng-if="auth.messages.success" role="alert" class="text-success">
+            <div ng-repeat="success in auth.messages.success">{{success.msg}}</div>
+        </div>
+
+        <div ng-if="auth.type === 'login'">
+
+            <h1>Log In</h1>
+
+            <form ng-submit="auth.login()">
+                <md-input-container class="md-icon-float md-block">
+                    <label>Email</label>
+                    <md-icon class="material-icons">mail</md-icon>
+                    <input type="email" name="email" id="email" ng-model="auth.user.email" autofocus>
+                </md-input-container>
+                <md-input-container class="md-icon-float md-block">
+                    <label>Password</label>
+                    <md-icon class="material-icons">lock</md-icon>
+                    <input type="password" name="password" id="password" ng-model="auth.user.password">
+                </md-input-container>
+                <p><a href="/forgot">Forgot your password?</a></p>
+                <md-button class="md-raised md-primary" type="submit">Log in</md-button>
+            </form>
+
+        </div>
+
+        <div ng-if="auth.type === 'signup'">
+            <h1>Create an account</h1>
+
+            <form ng-submit="auth.signup()">
+                <md-input-container class="md-icon-float md-block">
+                    <label>Email</label>
+                    <md-icon class="material-icons">mail</md-icon>
+                    <input type="email" name="email" id="email" ng-model="auth.user.email" autofocus>
+                </md-input-container>
+                <md-input-container class="md-icon-float md-block">
+                    <label>Name</label>
+                    <md-icon class="material-icons">person</md-icon>
+                    <input type="text" name="name" id="name" ng-model="auth.user.name">
+                </md-input-container>
+                <md-input-container class="md-icon-float md-block">
+                    <label>Password</label>
+                    <md-icon class="material-icons">lock</md-icon>
+                    <input type="password" name="password" id="password" ng-model="auth.user.password">
+                </md-input-container>
+                <p>By signing up, you agree to the <a href="/">Terms of Service</a>.</p>
+                <md-button class="md-raised md-primary" type="submit">Create an account</md-button>
+            </form>
+
+            <hr>
+
+
+            <p>Already have an account? <a href="/login">Log in</a></p>
+        </div>
+
+        <div ng-if="auth.type === 'forgot'">
+            <h1>Forgot Password</h1>
+
+            <form ng-submit="auth.forgotPassword()">
+                <p>Enter your email address below and we'll send you password reset instructions.</p>
+                <md-input-container class="md-icon-float md-block">
+                    <label>Email</label>
+                    <md-icon class="material-icons">mail</md-icon>
+                    <input type="email" name="email" id="email" ng-model="user.email" autofocus>
+                </md-input-container>
+                <br>
+                <md-button class="md-raised md-primary" type="submit">Reset Password</md-button>
+            </form>
+        </div>
+
+    </div>
+</md-content>

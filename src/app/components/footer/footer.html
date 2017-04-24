@@ -1,0 +1,14 @@
+<footer>
+    <md-toolbar ng-show="footerCtrl.file.name || footerCtrl.paging.pages" class="md-scroll-shrink fixed bottom">
+        <div layout="row" layout-align="center center" flex>
+            <md-button ng-click="footerCtrl.removeAudio()" ng-if="footerCtrl.file.name" class="md-icon-button" aria-label="Stop playing">
+                <md-icon class="material-icons" aria-label="Edit">close</md-icon>
+            </md-button>
+            <div class="audioplayer" ng-if="footerCtrl.file.name" layout="row" layout-align="center center">
+                <audio ng-src="{{footerCtrl.file.url}}" controls autoplay></audio>
+                <span>{{footerCtrl.file.name}}</span>
+            </div>
+            <cl-paging ng-if="footerCtrl.paging.pages" cl-pages="footerCtrl.paging.pages" cl-steps="3" cl-align="start start" cl-current-page="footerCtrl.paging.current"></cl-paging>
+        </div>
+    </md-toolbar>
+</footer>
