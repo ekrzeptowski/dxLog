@@ -86,6 +86,17 @@ function LogFormController($scope, StationsService, $mdDialog, filterFilter, Pag
         };
         PagingService.paging.pages = vm.numberOfPages();
     };
+		vm.logTemplate = {
+			transmitter: "",
+			ITU: "",
+			lat: 0,
+			lon: 0,
+			qrb: 0,
+			station: "",
+			freq: 0,
+			pol: "",
+			pmax: 0
+		}
     vm.addLog = function(entry) {
         $mdDialog.show({
             templateUrl: logFormTpl,
