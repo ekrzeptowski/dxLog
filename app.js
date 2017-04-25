@@ -1,7 +1,4 @@
 var express = require('express');
-var webpackDevMiddleware = require("webpack-dev-middleware");
-var webpack = require("webpack");
-var webpackConfig = require("./webpack.config");
 var config = require('./config');
 var path = require('path');
 var logger = require('morgan');
@@ -29,7 +26,6 @@ var routes = require('./routes/index');
 var userController = require('./routes/user');
 
 var app = express();
-var compiler = webpack(webpackConfig);
 
 mongoose.connect(process.env.db);
 mongoose.connection.on('error', function() {
@@ -53,6 +49,10 @@ if (config.expressHttp) {
     }
 }
 if (app.get('env') === 'development') {
+    var webpackDevMiddleware = require("webpack-dev-middleware");
+    var webpack = require("webpack");
+    var webpackConfig = require("./webpack.config");
+    var compiler = webpack(webpackConfig);
     app.use(webpackDevMiddleware(compiler, {
         publicPath: "/", // Same as `output.publicPath` in most cases.
         noInfo: false, // display no info to console (only warnings and errors)
